@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SUPERVISOR
+  LEARNER
+}
+
+enum ModuleMode {
+  INDIVIDUAL
+  FACILITATED
+  HYBRID
+}
+
+enum EvidenceType {
+  COMPLETION
+  QUIZ
+  SESSION
+  SIGNOFF
+}
+
+enum AssessmentOutcome {
+  COMPETENT
+  NEEDS_FOLLOWUP
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(LEARNER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  facilitatedSessions TrainingSession[] @relation("Facilitator")
+  awardsReceived      CompetencyAward[] @relation("AwardTo")
+  awardsGiven         CompetencyAward[] @relation("AwardedBy")
+  attendance          SessionAttendance[]
+  assessments         SessionAssessment[]
+}
+
+model Competency {
+  id           String   @id @default(uuid()) @db.Uuid
+  code         String   @unique
+  title        String
+  category     String
+  description  String?
+  expiryMonths Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  mappings ModuleCompetency[]
+  awards   CompetencyAward[]
+  assessments SessionAssessment[]
+}
+
+model Module {
+  id          String     @id @default(uuid()) @db.Uuid
+  title       String
+  mode        ModuleMode @default(INDIVIDUAL)
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  competencies ModuleCompetency[]
+  sessions     TrainingSession[]
+}
+
+model ModuleCompetency {
+  id           String       @id @default(uuid()) @db.Uuid
+  moduleId     String       @db.Uuid
+  competencyId String       @db.Uuid
+  evidenceType EvidenceType
+
+  module     Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  competency Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+
+  @@unique([moduleId, competencyId])
+}
+
+model TrainingSession {
+  id            String   @id @default(uuid()) @db.Uuid
+  moduleId      String   @db.Uuid
+  facilitatorId String   @db.Uuid
+  date          DateTime
+  location      String?
+  project       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  module      Module @relation(fields: [moduleId], references: [id])
+  facilitator User   @relation("Facilitator", fields: [facilitatorId], references: [id])
+
+  attendance  SessionAttendance[]
+  assessments SessionAssessment[]
+}
+
+model SessionAttendance {
+  id        String @id @default(uuid()) @db.Uuid
+  sessionId String @db.Uuid
+  userId    String @db.Uuid
+  attended  Boolean @default(true)
+  recordedAt DateTime @default(now())
+
+  session TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId])
+}
+
+model SessionAssessment {
+  id           String @id @default(uuid()) @db.Uuid
+  sessionId    String @db.Uuid
+  userId       String @db.Uuid
+  competencyId String @db.Uuid
+  outcome      AssessmentOutcome
+  notes        String?
+  recordedAt   DateTime @default(now())
+
+  session    TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  competency Competency      @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId, competencyId])
+}
+
+model CompetencyAward {
+  id           String      @id @default(uuid()) @db.Uuid
+  userId       String      @db.Uuid
+  competencyId String      @db.Uuid
+  awardedById  String      @db.Uuid
+  evidenceType EvidenceType
+  sessionId    String?     @db.Uuid
+  notes        String?
+  awardedAt    DateTime    @default(now())
+
+  user       User       @relation("AwardTo", fields: [userId], references: [id], onDelete: Cascade)
+  competency Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+  awardedBy  User       @relation("AwardedBy", fields: [awardedById], references: [id], onDelete: Cascade)
+}
