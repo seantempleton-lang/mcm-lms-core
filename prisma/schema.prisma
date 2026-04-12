@@ -101,6 +101,7 @@ model TrainingSession {
 
   attendance  SessionAttendance[]
   assessments SessionAssessment[]
+  awards      CompetencyAward[]
 }
 
 model SessionAttendance {
@@ -145,4 +146,5 @@ model CompetencyAward {
   user       User       @relation("AwardTo", fields: [userId], references: [id], onDelete: Cascade)
   competency Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
   awardedBy  User       @relation("AwardedBy", fields: [awardedById], references: [id], onDelete: Cascade)
+  session    TrainingSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
 }
