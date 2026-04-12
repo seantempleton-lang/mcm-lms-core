@@ -7,29 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  SUPERVISOR
-  LEARNER
-}
+enum Role { ADMIN SUPERVISOR LEARNER }
 
-enum ModuleMode {
-  INDIVIDUAL
-  FACILITATED
-  HYBRID
-}
+enum ModuleMode { INDIVIDUAL FACILITATED HYBRID }
 
-enum EvidenceType {
-  COMPLETION
-  QUIZ
-  SESSION
-  SIGNOFF
-}
+enum EvidenceType { COMPLETION QUIZ SESSION SIGNOFF }
 
-enum AssessmentOutcome {
-  COMPETENT
-  NEEDS_FOLLOWUP
-}
+enum AssessmentOutcome { COMPETENT NEEDS_FOLLOWUP }
 
 model User {
   id           String   @id @default(uuid()) @db.Uuid
@@ -39,7 +23,6 @@ model User {
   role         Role     @default(LEARNER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
   facilitatedSessions TrainingSession[] @relation("Facilitator")
   awardsReceived      CompetencyAward[] @relation("AwardTo")
   awardsGiven         CompetencyAward[] @relation("AwardedBy")
@@ -56,7 +39,6 @@ model Competency {
   expiryMonths Int?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
   mappings ModuleCompetency[]
   awards   CompetencyAward[]
   assessments SessionAssessment[]
@@ -69,7 +51,6 @@ model Module {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
   competencies ModuleCompetency[]
   sessions     TrainingSession[]
 }
@@ -79,10 +60,8 @@ model ModuleCompetency {
   moduleId     String       @db.Uuid
   competencyId String       @db.Uuid
   evidenceType EvidenceType
-
   module     Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   competency Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
-
   @@unique([moduleId, competencyId])
 }
 
@@ -95,13 +74,10 @@ model TrainingSession {
   project       String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
   module      Module @relation(fields: [moduleId], references: [id])
   facilitator User   @relation("Facilitator", fields: [facilitatorId], references: [id])
-
   attendance  SessionAttendance[]
   assessments SessionAssessment[]
-  awards      CompetencyAward[]
 }
 
 model SessionAttendance {
@@ -110,10 +86,8 @@ model SessionAttendance {
   userId    String @db.Uuid
   attended  Boolean @default(true)
   recordedAt DateTime @default(now())
-
   session TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@unique([sessionId, userId])
 }
 
@@ -125,11 +99,9 @@ model SessionAssessment {
   outcome      AssessmentOutcome
   notes        String?
   recordedAt   DateTime @default(now())
-
   session    TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   competency Competency      @relation(fields: [competencyId], references: [id], onDelete: Cascade)
-
   @@unique([sessionId, userId, competencyId])
 }
 
@@ -142,9 +114,7 @@ model CompetencyAward {
   sessionId    String?     @db.Uuid
   notes        String?
   awardedAt    DateTime    @default(now())
-
   user       User       @relation("AwardTo", fields: [userId], references: [id], onDelete: Cascade)
   competency Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
   awardedBy  User       @relation("AwardedBy", fields: [awardedById], references: [id], onDelete: Cascade)
-  session    TrainingSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
 }
