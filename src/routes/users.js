@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { prisma } from '../prisma.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
+import { asyncHandler } from '../utils/http.js';
 
 export const usersRouter = Router();
 
 // User lookup for adding attendees to sessions.
 // Supports optional querystring: ?q=searchText
-usersRouter.get('/', requireAuth, requireRole('SUPERVISOR','ADMIN'), async (req,res)=>{
+usersRouter.get('/', requireAuth, requireRole('SUPERVISOR','ADMIN'), asyncHandler(async (req,res)=>{
   const q = (req.query.q || '').toString().trim();
 
   const where = q ? {
@@ -24,4 +25,4 @@ usersRouter.get('/', requireAuth, requireRole('SUPERVISOR','ADMIN'), async (req,
   });
 
   res.json(users);
-});
+}));
