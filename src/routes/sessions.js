@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../prisma.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
-import { sessionCreateSchema, attendancePostSchema, assessmentsPostSchema } from '../validators.js';
+import { sessionCreateSchema, attendancePostSchema, assessmentsPostSchema, sessionAwardsPostSchema } from '../validators.js';
 import { asyncHandler, mapPrismaError } from '../utils/http.js';
 
 export const sessionsRouter = Router();
@@ -75,4 +75,35 @@ sessionsRouter.post('/:id/assessments', requireAuth, requireRole('SUPERVISOR','A
     throw mapPrismaError(error, 'Failed to record assessments');
   }
   res.json({ updated: results.length });
+}));
+
+sessionsRouter.post('/:id/awards', requireAuth, requireRole('SUPERVISOR','ADMIN'), asyncHandler(async (req,res)=>{
+  const sessionId=req.params.id;
+  const parsed=sessionAwardsPostSchema.safeParse(req.body);
+  if(!parsed.success) return res.status(400).json(parsed.error.flatten());
+
+  const session = await prisma.trainingSession.findUnique({
+    where:{ id:sessionId },
+    select:{ id:true }
+  });
+  if(!session) return res.status(404).json({ error:'Not found' });
+
+  const payload = parsed.data.awards.map((award)=>({
+    userId: award.userId,
+    competencyId: award.competencyId,
+    awardedById: req.user.sub,
+    evidenceType: 'SESSION',
+    sessionId,
+    notes: award.notes
+  }));
+
+  try {
+    const result = await prisma.competencyAward.createMany({
+      data: payload,
+      skipDuplicates: true
+    });
+    res.json({ created: result.count });
+  } catch (error) {
+    throw mapPrismaError(error, 'Failed to create competency awards');
+  }
 }));

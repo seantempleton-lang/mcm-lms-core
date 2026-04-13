@@ -7,13 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role { ADMIN SUPERVISOR LEARNER }
+enum Role {
+  ADMIN
+  SUPERVISOR
+  LEARNER
+}
 
-enum ModuleMode { INDIVIDUAL FACILITATED HYBRID }
+enum ModuleMode {
+  INDIVIDUAL
+  FACILITATED
+  HYBRID
+}
 
-enum EvidenceType { COMPLETION QUIZ SESSION SIGNOFF }
+enum EvidenceType {
+  COMPLETION
+  QUIZ
+  SESSION
+  SIGNOFF
+}
 
-enum AssessmentOutcome { COMPETENT NEEDS_FOLLOWUP }
+enum AssessmentOutcome {
+  COMPETENT
+  NEEDS_FOLLOWUP
+}
 
 model User {
   id           String   @id @default(uuid()) @db.Uuid
@@ -119,4 +135,5 @@ model CompetencyAward {
   competency Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
   awardedBy  User       @relation("AwardedBy", fields: [awardedById], references: [id], onDelete: Cascade)
   session    TrainingSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  @@unique([userId, competencyId, sessionId])
 }
