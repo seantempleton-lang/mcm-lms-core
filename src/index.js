@@ -9,6 +9,7 @@ import { usersRouter } from './routes/users.js';
 import { competenciesRouter } from './routes/competencies.js';
 import { modulesRouter } from './routes/modules.js';
 import { sessionsRouter } from './routes/sessions.js';
+import { adminRouter } from './routes/admin.js';
 
 const app = express();
 app.use(helmet());
@@ -23,6 +24,7 @@ app.get('/health', (req,res)=>res.json({ ok:true }));
 
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
 app.use('/competencies', competenciesRouter);
 app.use('/modules', modulesRouter);
 app.use('/sessions', sessionsRouter);

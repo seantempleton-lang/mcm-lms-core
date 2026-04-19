@@ -10,3 +10,16 @@ export const moduleCreateSchema = z.object({ title:z.string().min(3), mode:z.enu
 export const modulePatchSchema = moduleCreateSchema.partial();
 export const moduleCompetenciesPutSchema = z.object({ items: z.array(z.object({ competencyId:z.string().uuid(), evidenceType:z.enum(['COMPLETION','QUIZ','SESSION','SIGNOFF']) })).min(1) });
 export const awardSchema = z.object({ userId:z.string().uuid(), evidenceType:z.enum(['COMPLETION','QUIZ','SESSION','SIGNOFF']), sessionId:z.string().uuid().optional(), notes:z.string().optional() });
+export const userCreateSchema = z.object({
+  email:    z.string().email(),
+  name:     z.string().min(2),
+  role:     z.enum(['ADMIN', 'SUPERVISOR', 'LEARNER']),
+  password: z.string().min(8),
+});
+
+export const userPatchSchema = z.object({
+  name:     z.string().min(2).optional(),
+  email:    z.string().email().optional(),
+  role:     z.enum(['ADMIN', 'SUPERVISOR', 'LEARNER']).optional(),
+  password: z.string().min(8).optional(),
+});
