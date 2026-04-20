@@ -198,11 +198,240 @@ async function main() {
     ]
   };
 
+  const drillingFundamentalsDeck = {
+    title: 'Drilling Fundamentals',
+    subtitle: moduleContent.overview,
+    slides: [
+      {
+        id: 'hero',
+        type: 'hero',
+        eyebrow: 'Geotechnical drilling',
+        title: 'Drilling fundamentals for field crews',
+        body: 'This module introduces the core ideas behind geotechnical drilling so learners understand why we drill, what can go wrong, and which controls to use in the field.',
+        fact: '11 January 2023 | Christchurch',
+        meta: [
+          'Why we drill and what the client needs',
+          'Common drilling problems and control levers',
+          'Fluids, heave control, artesian pressure, and field tests'
+        ]
+      },
+      {
+        id: 'goals',
+        type: 'bullets',
+        eyebrow: 'Session goals',
+        title: 'What this module is designed to do',
+        bullets: [
+          'Share practical drilling theory for day-to-day work.',
+          'Provide tools and tricks that can be used in the field.',
+          'Answer common questions operators and crews run into on site.'
+        ]
+      },
+      {
+        id: 'why-we-drill',
+        type: 'bullets',
+        eyebrow: 'Core concept',
+        title: 'Why do we drill?',
+        bullets: [
+          'For core recovery, including specialised techniques like gel-push and Dames & Moore.',
+          'For in-situ testing such as SPT.',
+          'For water work including piezometers, wells, and infiltration tests.',
+          'To install instrumentation such as inclos, VWPs, and extensometers.',
+          'To enable another investigation technique, for example pre-drill for CPT.',
+          'The client purpose matters because every drilling method involves trade-offs.'
+        ]
+      },
+      {
+        id: 'what-can-go-wrong',
+        type: 'bullets',
+        eyebrow: 'Risk awareness',
+        title: 'What can go wrong during drilling?',
+        bullets: [
+          'Loss of core.',
+          'Heave.',
+          'Artesian flow.',
+          'Stuck install or stuck casing.',
+          'Damaged instrumentation.',
+          'Rig problems on top of drilling issues.'
+        ]
+      },
+      {
+        id: 'combat-issues',
+        type: 'bullets',
+        eyebrow: 'Control levers',
+        title: 'Ways to combat drilling issues',
+        bullets: [
+          'Prepare and circulate the right drilling fluid.',
+          'Adjust mud viscosity and weight.',
+          'Use the correct bit or shoe type, size, and wear condition.',
+          'Tune speed variables: rotation, feed, hammer, and sonic frequency.',
+          'Use overcasing or pre-drilling where appropriate.',
+          'Choose the right support equipment and understand the ground conditions.'
+        ]
+      },
+      {
+        id: 'drilling-fluids',
+        type: 'bullets',
+        eyebrow: 'Fluids',
+        title: 'What drilling fluids do for you',
+        bullets: [
+          'Water lubricates and cools the bit or shoe.',
+          'Water, bentonite, and polymer can lubricate the drill string.',
+          'Polymer helps maintain circulation and line the hole.',
+          'Bentonite and barite help balance heave or artesian pressure.',
+          'Polymer and bentonite lift cuttings to the surface.',
+          'Effective cuttings transport depends on both viscosity and annular velocity.'
+        ]
+      },
+      {
+        id: 'fluid-equilibrium',
+        type: 'checklist',
+        eyebrow: 'DT focus',
+        title: 'How to maintain fluid equilibrium and avoid heave',
+        checklist: [
+          'Treat fluid equilibrium as critical for all drilling methods.',
+          'Be especially careful in DT drilling because the annulus is very small.',
+          'Remove the spike or sample barrel very slowly.',
+          'Continuously top up water or mud in the casing as you withdraw.',
+          'Remember that if fluid level drops, ground pressure can cause heave.'
+        ]
+      },
+      {
+        id: 'artesian-pressure',
+        type: 'bullets',
+        eyebrow: 'Artesian pressure',
+        title: 'Recognise and manage artesian pressure',
+        bullets: [
+          'Artesian pressure exists when the piezometric level of a confined aquifer is above ground surface.',
+          'It only occurs in confined aquifers with an aquitard above, such as silt or clay.',
+          'Temporary control can be achieved with weighted mud if the mud column is stable.',
+          'Use the formula: (head above ground + casing depth) / casing depth = SG required.',
+          'Worked example: 20 m casing depth and 2 m head gives SG 1.1.',
+          'Always treat weighted mud as temporary control and escalate when needed.'
+        ]
+      },
+      {
+        id: 'field-tests',
+        type: 'bullets',
+        eyebrow: 'Field tests',
+        title: 'What to monitor with mud balance, Marsh funnel, and pH',
+        bullets: [
+          'Mud scales measure drilling fluid density in g/cm3 or kg/m3.',
+          'The Marsh funnel is a time-based viscosity indicator; fresh water is 26 seconds.',
+          'Typical mud ranges from 30 to 90 seconds depending on ground conditions.',
+          'Medium sand generally needs a higher viscosity than fine sand.',
+          'Trending readings matters more than relying on a single measurement.',
+          'Soda ash is used to condition water chemistry and must be handled with the correct PPE.'
+        ]
+      }
+    ],
+    quiz: [
+      {
+        id: 'q1',
+        question: 'Why is it important to understand the client’s purpose before drilling?',
+        options: [
+          'Because the client purpose changes the best drilling approach and trade-offs.',
+          'Because it only affects paperwork after drilling is complete.',
+          'Because it determines who signs the fuel sheet.',
+          'Because it removes the need to understand the ground conditions.'
+        ],
+        correctIndex: 0,
+        explanation: 'The module stresses that the reason for drilling drives method selection and the compromises that come with it.'
+      },
+      {
+        id: 'q2',
+        question: 'Which of the following is identified as a common drilling problem?',
+        options: [
+          'Perfect core recovery every run',
+          'Heave',
+          'Lower fuel costs',
+          'Faster internet in the rig'
+        ],
+        correctIndex: 1,
+        explanation: 'The training explicitly lists heave as one of the key things that can go wrong during drilling.'
+      },
+      {
+        id: 'q3',
+        question: 'What two things both matter for transporting cuttings effectively?',
+        options: [
+          'Viscosity and annular velocity',
+          'Fuel level and tyre pressure',
+          'Hammer size and paint colour',
+          'Operator age and shift length'
+        ],
+        correctIndex: 0,
+        explanation: 'The drilling fluids section notes that viscosity alone is not enough; annular velocity matters too.'
+      },
+      {
+        id: 'q4',
+        question: 'Why is fluid equilibrium especially critical in DT drilling?',
+        options: [
+          'Because DT drilling has a very small annulus.',
+          'Because DT drilling does not use water.',
+          'Because DT rigs cannot be cased.',
+          'Because DT drilling removes the need for mud.'
+        ],
+        correctIndex: 0,
+        explanation: 'The lesson calls out the small annulus in DT systems as the reason fluid level changes become especially sensitive.'
+      },
+      {
+        id: 'q5',
+        question: 'What is the correct first response when artesian pressure is identified?',
+        options: [
+          'Ignore it unless water is visible',
+          'Treat weighted mud as temporary control only and escalate when needed',
+          'Continue drilling faster to get through it',
+          'Rely only on the Marsh funnel result'
+        ],
+        correctIndex: 1,
+        explanation: 'The training says weighted mud can be used temporarily, but artesian pressure should still be escalated rather than self-managed indefinitely.'
+      },
+      {
+        id: 'q6',
+        question: 'What is the fresh water baseline for a Marsh funnel reading?',
+        options: [
+          '12 seconds',
+          '26 seconds',
+          '55 seconds',
+          '90 seconds'
+        ],
+        correctIndex: 1,
+        explanation: 'The module notes that fresh water is 26 seconds using the quart standard.'
+      }
+    ]
+  };
+
   // ── Module upsert ─────────────────────────────────────────────
   const mod = await prisma.module.upsert({
     where:  { id: '00000000-0000-0000-0000-000000000001' },
-    update: { title: 'Drilling Fundamentals', mode: 'HYBRID', category: 'GEOTECH', description: JSON.stringify(moduleContent) },
-    create: { id: '00000000-0000-0000-0000-000000000001', title: 'Drilling Fundamentals', mode: 'HYBRID', category: 'GEOTECH', description: JSON.stringify(moduleContent) }
+    update: {
+      title: 'Drilling Fundamentals',
+      mode: 'HYBRID',
+      category: 'GEOTECH',
+      description: moduleContent.overview,
+      learningObjectives: [
+        'Understand why geotechnical drilling is performed and how client objectives shape method selection.',
+        'Recognise common drilling problems and the main control levers used in the field.',
+        'Explain how drilling fluids, fluid equilibrium, and artesian pressure affect safe drilling outcomes.',
+        'Review understanding with an end-of-module quiz.'
+      ].join('\n'),
+      estimatedMinutes: 30,
+      contentBody: JSON.stringify(drillingFundamentalsDeck)
+    },
+    create: {
+      id: '00000000-0000-0000-0000-000000000001',
+      title: 'Drilling Fundamentals',
+      mode: 'HYBRID',
+      category: 'GEOTECH',
+      description: moduleContent.overview,
+      learningObjectives: [
+        'Understand why geotechnical drilling is performed and how client objectives shape method selection.',
+        'Recognise common drilling problems and the main control levers used in the field.',
+        'Explain how drilling fluids, fluid equilibrium, and artesian pressure affect safe drilling outcomes.',
+        'Review understanding with an end-of-module quiz.'
+      ].join('\n'),
+      estimatedMinutes: 30,
+      contentBody: JSON.stringify(drillingFundamentalsDeck)
+    }
   });
 
   await prisma.module.upsert({
