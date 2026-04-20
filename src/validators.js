@@ -17,7 +17,7 @@ export const moduleCreateSchema = z.object({
   contentBody:z.string().max(20000).optional()
 });
 export const modulePatchSchema = moduleCreateSchema.partial();
-export const moduleCompetenciesPutSchema = z.object({ items: z.array(z.object({ competencyId:z.string().uuid(), evidenceType:z.enum(['COMPLETION','QUIZ','SESSION','SIGNOFF']) })).min(1) });
+export const moduleCompetenciesPutSchema = z.object({ items: z.array(z.object({ competencyId:z.string().uuid(), evidenceType:z.enum(['COMPLETION','QUIZ','SESSION','SIGNOFF']) })) });
 export const awardSchema = z.object({ userId:z.string().uuid(), evidenceType:z.enum(['COMPLETION','QUIZ','SESSION','SIGNOFF']), sessionId:z.string().uuid().optional(), notes:z.string().optional() });
 export const userCreateSchema = z.object({
   email:    z.string().email(),
