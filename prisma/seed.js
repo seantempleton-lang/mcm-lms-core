@@ -208,6 +208,139 @@ async function main() {
     create: { id: '00000000-0000-0000-0000-000000000001', title: 'Drilling Fundamentals', mode: 'HYBRID', category: 'GEOTECH', description: JSON.stringify(moduleContent) }
   });
 
+  await prisma.module.upsert({
+    where: { id: '00000000-0000-0000-0000-000000000002' },
+    update: {
+      title: 'Plant Risk Assessment Review',
+      mode: 'INDIVIDUAL',
+      category: 'PLANT',
+      description: 'Review how to read, understand, and apply a plant risk assessment before work starts.',
+      learningObjectives: [
+        'Identify the purpose of a plant risk assessment and when it must be reviewed.',
+        'Recognise key hazards, controls, and responsibilities listed in the assessment.',
+        'Confirm how to respond when site conditions or plant configuration differ from the assessment.',
+        'Check understanding with a short end-of-module quiz.'
+      ].join('\n'),
+      estimatedMinutes: 20,
+      contentBody: [
+        'Plant Risk Assessment Review',
+        '',
+        'Section 1: Why this matters',
+        'A plant risk assessment is used to identify hazards associated with operating, transporting, setting up, maintaining, and working around plant. It helps the crew understand what could go wrong, what controls must be in place, and who is responsible for checking them.',
+        '',
+        'Before starting work, the learner should review the assessment and confirm it matches the actual task, plant, ground conditions, and work area.',
+        '',
+        'Section 2: What to look for in the assessment',
+        'When reviewing a plant risk assessment, check the following:',
+        '- The plant and task are clearly identified.',
+        '- The main hazards are listed, including movement, crush points, overhead services, ground conditions, stored energy, people-plant interaction, and environmental risks.',
+        '- The required controls are practical, specific, and can actually be applied on site.',
+        '- Required PPE, exclusion zones, permits, isolations, and communication steps are described.',
+        '- Emergency actions and escalation points are clear.',
+        '',
+        'Section 3: Your responsibilities as a learner/operator',
+        'The learner should be able to explain:',
+        '- What hazards are present for the planned task.',
+        '- What controls must be in place before operating.',
+        '- What to do if a control cannot be implemented.',
+        '- When to stop work and ask for the risk assessment to be reviewed or updated.',
+        '',
+        'If the assessment does not match the job, do not treat it as a tick-box exercise. Stop, raise the issue, and make sure the assessment is updated before continuing.',
+        '',
+        'Section 4: Signs the assessment needs to be reviewed',
+        'The assessment should be reviewed when:',
+        '- The plant attachment, configuration, or operating method changes.',
+        '- Ground conditions, weather, traffic flow, or access conditions are different from the plan.',
+        '- New people, contractors, or adjacent work activities create extra risk.',
+        '- A hazard or near miss is identified that is not already covered.',
+        '',
+        'Section 5: Practical review checklist',
+        'Before work starts, ask yourself:',
+        '1. Do I understand the task and the plant being used?',
+        '2. Do the listed hazards match what I can see on site?',
+        '3. Are the controls available and in place right now?',
+        '4. Do I know the limits, exclusion zones, and communication method?',
+        '5. Do I know when to stop and escalate?',
+        '',
+        'Quiz Section: Review your learning',
+        'Answer these questions before marking the module complete:',
+        '1. What is the purpose of a plant risk assessment?',
+        '2. Name three hazards you would expect to see in a plant risk assessment.',
+        '3. What should you do if the site conditions do not match the assessment?',
+        '4. Why is it important to confirm that controls are actually in place, not just written down?',
+        '5. Give one example of a change that should trigger a review of the assessment.',
+        '',
+        'Learner reflection:',
+        'Write a short note explaining how you would verify that a plant risk assessment is still valid before starting work.'
+      ].join('\n')
+    },
+    create: {
+      id: '00000000-0000-0000-0000-000000000002',
+      title: 'Plant Risk Assessment Review',
+      mode: 'INDIVIDUAL',
+      category: 'PLANT',
+      description: 'Review how to read, understand, and apply a plant risk assessment before work starts.',
+      learningObjectives: [
+        'Identify the purpose of a plant risk assessment and when it must be reviewed.',
+        'Recognise key hazards, controls, and responsibilities listed in the assessment.',
+        'Confirm how to respond when site conditions or plant configuration differ from the assessment.',
+        'Check understanding with a short end-of-module quiz.'
+      ].join('\n'),
+      estimatedMinutes: 20,
+      contentBody: [
+        'Plant Risk Assessment Review',
+        '',
+        'Section 1: Why this matters',
+        'A plant risk assessment is used to identify hazards associated with operating, transporting, setting up, maintaining, and working around plant. It helps the crew understand what could go wrong, what controls must be in place, and who is responsible for checking them.',
+        '',
+        'Before starting work, the learner should review the assessment and confirm it matches the actual task, plant, ground conditions, and work area.',
+        '',
+        'Section 2: What to look for in the assessment',
+        'When reviewing a plant risk assessment, check the following:',
+        '- The plant and task are clearly identified.',
+        '- The main hazards are listed, including movement, crush points, overhead services, ground conditions, stored energy, people-plant interaction, and environmental risks.',
+        '- The required controls are practical, specific, and can actually be applied on site.',
+        '- Required PPE, exclusion zones, permits, isolations, and communication steps are described.',
+        '- Emergency actions and escalation points are clear.',
+        '',
+        'Section 3: Your responsibilities as a learner/operator',
+        'The learner should be able to explain:',
+        '- What hazards are present for the planned task.',
+        '- What controls must be in place before operating.',
+        '- What to do if a control cannot be implemented.',
+        '- When to stop work and ask for the risk assessment to be reviewed or updated.',
+        '',
+        'If the assessment does not match the job, do not treat it as a tick-box exercise. Stop, raise the issue, and make sure the assessment is updated before continuing.',
+        '',
+        'Section 4: Signs the assessment needs to be reviewed',
+        'The assessment should be reviewed when:',
+        '- The plant attachment, configuration, or operating method changes.',
+        '- Ground conditions, weather, traffic flow, or access conditions are different from the plan.',
+        '- New people, contractors, or adjacent work activities create extra risk.',
+        '- A hazard or near miss is identified that is not already covered.',
+        '',
+        'Section 5: Practical review checklist',
+        'Before work starts, ask yourself:',
+        '1. Do I understand the task and the plant being used?',
+        '2. Do the listed hazards match what I can see on site?',
+        '3. Are the controls available and in place right now?',
+        '4. Do I know the limits, exclusion zones, and communication method?',
+        '5. Do I know when to stop and escalate?',
+        '',
+        'Quiz Section: Review your learning',
+        'Answer these questions before marking the module complete:',
+        '1. What is the purpose of a plant risk assessment?',
+        '2. Name three hazards you would expect to see in a plant risk assessment.',
+        '3. What should you do if the site conditions do not match the assessment?',
+        '4. Why is it important to confirm that controls are actually in place, not just written down?',
+        '5. Give one example of a change that should trigger a review of the assessment.',
+        '',
+        'Learner reflection:',
+        'Write a short note explaining how you would verify that a plant risk assessment is still valid before starting work.'
+      ].join('\n')
+    }
+  });
+
   // ── Competency mappings ───────────────────────────────────────
   for (const [competencyId, evidenceType] of [
     [dtFund.id,     'SESSION'],
@@ -225,6 +358,7 @@ async function main() {
   console.log('Seed complete.');
   console.log('Users: stempleton / tlubbe / gcossar + test accounts');
   console.log('Module: Drilling Fundamentals (HYBRID) -- 8 sections');
+  console.log('Module: Plant Risk Assessment Review (INDIVIDUAL) -- Plant category with end-of-module quiz');
   console.log('  DT-FUND-01  -> SESSION');
   console.log('  DT-FLUID-01 -> QUIZ');
   console.log('  DT-HEAVE-01 -> SESSION');
