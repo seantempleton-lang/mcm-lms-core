@@ -42,8 +42,16 @@ export const trainingAssignmentStartSchema = z.object({
   learnerNotes: z.string().trim().max(2000).optional(),
 });
 
+const assessmentSummarySchema = z.object({
+  score: z.number().int().min(0),
+  totalQuestions: z.number().int().min(0),
+  attempts: z.number().int().min(1),
+  durationSeconds: z.number().int().min(0)
+});
+
 export const trainingAssignmentSubmitSchema = z.object({
   learnerNotes: z.string().trim().max(2000).optional(),
+  assessmentSummary: assessmentSummarySchema.optional(),
 });
 
 export const trainingAssignmentReviewSchema = z.object({

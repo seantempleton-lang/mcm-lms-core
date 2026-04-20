@@ -29,6 +29,15 @@ function buildLearnerReport(assignments, awards) {
         moduleTitle: item.module.title,
         reviewedAt: item.reviewedAt,
         reviewNotes: item.reviewNotes,
+        assessmentSummary: item.assessmentTotalQuestions !== null && item.assessmentTotalQuestions !== undefined
+          ? {
+              score: item.assessmentScore,
+              totalQuestions: item.assessmentTotalQuestions,
+              attempts: item.assessmentAttempts,
+              durationSeconds: item.assessmentDurationSeconds,
+              lastAttemptAt: item.assessmentLastAttemptAt
+            }
+          : null,
         competencies: item.module.competencies.map((mapping) => ({
           id: mapping.competency.id,
           code: mapping.competency.code,
@@ -144,6 +153,11 @@ trainingRouter.post('/', requireAuth, requireRole('SUPERVISOR', 'ADMIN'), asyncH
         status: 'ASSIGNED',
         learnerNotes: null,
         reviewNotes: null,
+        assessmentScore: null,
+        assessmentTotalQuestions: null,
+        assessmentAttempts: null,
+        assessmentDurationSeconds: null,
+        assessmentLastAttemptAt: null,
         assignedAt: new Date(),
         startedAt: null,
         submittedAt: null,
@@ -215,7 +229,12 @@ trainingRouter.post('/:id/submit', requireAuth, requireRole('LEARNER'), asyncHan
       status: 'PENDING_REVIEW',
       startedAt: assignment.startedAt || new Date(),
       submittedAt: new Date(),
-      learnerNotes: parsed.data.learnerNotes ?? assignment.learnerNotes
+      learnerNotes: parsed.data.learnerNotes ?? assignment.learnerNotes,
+      assessmentScore: parsed.data.assessmentSummary?.score,
+      assessmentTotalQuestions: parsed.data.assessmentSummary?.totalQuestions,
+      assessmentAttempts: parsed.data.assessmentSummary?.attempts,
+      assessmentDurationSeconds: parsed.data.assessmentSummary?.durationSeconds,
+      assessmentLastAttemptAt: parsed.data.assessmentSummary ? new Date() : assignment.assessmentLastAttemptAt
     },
     include: {
       module: { include: { competencies: { include: { competency: true } } } },

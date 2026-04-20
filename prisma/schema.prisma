@@ -161,6 +161,11 @@ model TrainingAssignment {
   status       TrainingAssignmentStatus @default(ASSIGNED)
   learnerNotes String?
   reviewNotes  String?
+  assessmentScore          Int?
+  assessmentTotalQuestions Int?
+  assessmentAttempts       Int?
+  assessmentDurationSeconds Int?
+  assessmentLastAttemptAt  DateTime?
   assignedAt   DateTime                 @default(now())
   startedAt    DateTime?
   submittedAt  DateTime?
