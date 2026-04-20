@@ -20,9 +20,6 @@ async function main() {
   await upsertUser('gcossar@drilling.co.nz',    'Greg Cossar',    'LEARNER',    'password123!');
 
   // ── Default test accounts (remove when no longer needed) ────
-  await upsertUser('admin@example.com',      'Admin User',      'ADMIN',      'ChangeMe123!');
-  await upsertUser('supervisor@example.com', 'Supervisor User', 'SUPERVISOR', 'ChangeMe123!');
-  await upsertUser('learner@example.com',    'Learner User',    'LEARNER',    'ChangeMe123!');
 
   // ── Competencies ─────────────────────────────────────────────
   const dtFund = await prisma.competency.upsert({
@@ -211,133 +208,381 @@ async function main() {
   await prisma.module.upsert({
     where: { id: '00000000-0000-0000-0000-000000000002' },
     update: {
-      title: 'Plant Risk Assessment Review',
+      title: 'P399 Plant Risk Assessment Review',
       mode: 'INDIVIDUAL',
       category: 'PLANT',
-      description: 'Review how to read, understand, and apply a plant risk assessment before work starts.',
+      description: 'Review the P399 Sonic Drilling Rig plant risk assessment, key hazards, current controls, and operator responsibilities before work starts.',
       learningObjectives: [
-        'Identify the purpose of a plant risk assessment and when it must be reviewed.',
-        'Recognise key hazards, controls, and responsibilities listed in the assessment.',
-        'Confirm how to respond when site conditions or plant configuration differ from the assessment.',
-        'Check understanding with a short end-of-module quiz.'
+        'Identify the purpose of the P399 plant risk assessment and the signoff expectations before use.',
+        'Recognise the main hazards and controls for the Geoprobe 8150LS Sonic Drilling Rig.',
+        'Explain operator, supervisor, and visitor responsibilities identified in the assessment.',
+        'Review understanding with an end-of-module quiz based on the real risk assessment.'
       ].join('\n'),
-      estimatedMinutes: 20,
-      contentBody: [
-        'Plant Risk Assessment Review',
-        '',
-        'Section 1: Why this matters',
-        'A plant risk assessment is used to identify hazards associated with operating, transporting, setting up, maintaining, and working around plant. It helps the crew understand what could go wrong, what controls must be in place, and who is responsible for checking them.',
-        '',
-        'Before starting work, the learner should review the assessment and confirm it matches the actual task, plant, ground conditions, and work area.',
-        '',
-        'Section 2: What to look for in the assessment',
-        'When reviewing a plant risk assessment, check the following:',
-        '- The plant and task are clearly identified.',
-        '- The main hazards are listed, including movement, crush points, overhead services, ground conditions, stored energy, people-plant interaction, and environmental risks.',
-        '- The required controls are practical, specific, and can actually be applied on site.',
-        '- Required PPE, exclusion zones, permits, isolations, and communication steps are described.',
-        '- Emergency actions and escalation points are clear.',
-        '',
-        'Section 3: Your responsibilities as a learner/operator',
-        'The learner should be able to explain:',
-        '- What hazards are present for the planned task.',
-        '- What controls must be in place before operating.',
-        '- What to do if a control cannot be implemented.',
-        '- When to stop work and ask for the risk assessment to be reviewed or updated.',
-        '',
-        'If the assessment does not match the job, do not treat it as a tick-box exercise. Stop, raise the issue, and make sure the assessment is updated before continuing.',
-        '',
-        'Section 4: Signs the assessment needs to be reviewed',
-        'The assessment should be reviewed when:',
-        '- The plant attachment, configuration, or operating method changes.',
-        '- Ground conditions, weather, traffic flow, or access conditions are different from the plan.',
-        '- New people, contractors, or adjacent work activities create extra risk.',
-        '- A hazard or near miss is identified that is not already covered.',
-        '',
-        'Section 5: Practical review checklist',
-        'Before work starts, ask yourself:',
-        '1. Do I understand the task and the plant being used?',
-        '2. Do the listed hazards match what I can see on site?',
-        '3. Are the controls available and in place right now?',
-        '4. Do I know the limits, exclusion zones, and communication method?',
-        '5. Do I know when to stop and escalate?',
-        '',
-        'Quiz Section: Review your learning',
-        'Answer these questions before marking the module complete:',
-        '1. What is the purpose of a plant risk assessment?',
-        '2. Name three hazards you would expect to see in a plant risk assessment.',
-        '3. What should you do if the site conditions do not match the assessment?',
-        '4. Why is it important to confirm that controls are actually in place, not just written down?',
-        '5. Give one example of a change that should trigger a review of the assessment.',
-        '',
-        'Learner reflection:',
-        'Write a short note explaining how you would verify that a plant risk assessment is still valid before starting work.'
-      ].join('\n')
+      estimatedMinutes: 25,
+      contentBody: JSON.stringify({
+        title: 'P399 Plant Risk Assessment Review',
+        subtitle: 'Review the live plant risk assessment for the P399 Geoprobe 8150LS Sonic Drilling Rig before starting work.',
+        slides: [
+          {
+            id: 'hero',
+            type: 'hero',
+            eyebrow: 'Plant category',
+            title: 'Know the risk before you operate P399',
+            body: 'This module walks the learner through the real plant risk assessment for the Sonic Drilling Rig so they can recognise hazards, confirm controls, and sign off with confidence.',
+            meta: [
+              'PRA Number 005',
+              'Plant type: Sonic Drilling Rig',
+              'Make / model: Geoprobe 8150LS',
+              'Asset number: P399'
+            ],
+            fact: 'Risk = likelihood x consequence'
+          },
+          {
+            id: 'signoff',
+            type: 'checklist',
+            eyebrow: 'Pre-start review',
+            title: 'The assessment must be reviewed before use',
+            checklist: [
+              'Confirm the plant is designed to perform the task.',
+              'Check whether the plant has been modified from OEM condition.',
+              'Confirm the plant is in good working condition.',
+              'Make sure action items from plant checks are closed out.',
+              'Sign off only when the plant is safe to operate.'
+            ]
+          },
+          {
+            id: 'hazards',
+            type: 'bullets',
+            eyebrow: 'Key hazards',
+            title: 'What can seriously hurt people around this rig?',
+            bullets: [
+              'Unexpected movement and people in the line of fire.',
+              'Entanglement, crushing, trapping, cutting, and puncture hazards.',
+              'Exposure to high-pressure hydraulic systems.',
+              'Slips, trips, and falls around ancillary equipment or from climbing on the rig.',
+              'Fire from hydraulic or diesel leaks contacting hot components.',
+              'Weather, noise, and hazardous substances affecting safe operation.'
+            ]
+          },
+          {
+            id: 'controls',
+            type: 'bullets',
+            eyebrow: 'Controls in place',
+            title: 'Current controls already required by the PRA',
+            bullets: [
+              'Operators must know the PRA, machine manual, signage, and rotary sonic rig JSA.',
+              'Crew need clear line of sight, clear communication, and a pre-shift toolbox meeting.',
+              'Visitors must be inducted and kept clear of the exclusion zone unless briefed.',
+              'Routine maintenance, inspections, and annual component checks are required.',
+              'Hearing protection is mandatory during machine operation.',
+              'In bad weather, fold down the mast and isolate the machine.'
+            ]
+          },
+          {
+            id: 'follow-up',
+            type: 'bullets',
+            eyebrow: 'Ongoing requirements',
+            title: 'What still has to happen after the PRA is issued?',
+            bullets: [
+              'Annual JSA review and refresher training.',
+              'Annual VOC for operators.',
+              'Daily pre-shift inspection using QuipCheck.',
+              'Visitor briefing linked to the daily toolbox meeting.',
+              'Fire extinguisher checks included in pre-start inspections.',
+              'Hazardous substances register and MSDS sheets reviewed regularly.'
+            ]
+          },
+          {
+            id: 'ready-check',
+            type: 'checklist',
+            eyebrow: 'Before operating',
+            title: 'Final readiness check for the learner',
+            checklist: [
+              'I know the task, plant, and main hazards.',
+              'I have reviewed the PRA and JSA.',
+              'Communication method and exclusion zones are clear.',
+              'Pre-start checks, including QuipCheck, are complete.',
+              'Required PPE is on and site/weather conditions are suitable.',
+              'I know when to stop and escalate concerns.'
+            ]
+          }
+        ],
+        quiz: [
+          {
+            id: 'q1',
+            question: 'Why must personnel review and sign off the P399 plant risk assessment before work starts?',
+            options: [
+              'To confirm they understand the hazards and controls for the task and plant.',
+              'Only to satisfy a paperwork requirement for the office.',
+              'Because the operator manual cannot be used on site.',
+              'To replace the need for a toolbox meeting.'
+            ],
+            correctIndex: 0,
+            explanation: 'The signoff shows the learner has reviewed the PRA and understands the controls that must be in place before operating.'
+          },
+          {
+            id: 'q2',
+            question: 'What is the required control for visitors who may be struck if they stand too close to the rig?',
+            options: [
+              'Let them approach once drilling has started.',
+              'Induct them to rig risks and keep the exclusion zone clear.',
+              'Ask the driller to work faster so the exposure time is shorter.',
+              'Use hand signals only after the visitor is inside the work area.'
+            ],
+            correctIndex: 1,
+            explanation: 'The PRA specifically calls for visitor induction and a clear exclusion zone.'
+          },
+          {
+            id: 'q3',
+            question: 'What daily inspection tool is identified in the assessment for pre-shift checks?',
+            options: [
+              'ShiftTrack',
+              'RigBoard',
+              'QuipCheck',
+              'PlantPass'
+            ],
+            correctIndex: 2,
+            explanation: 'The risk assessment names QuipCheck as the daily pre-shift inspection and reporting tool.'
+          },
+          {
+            id: 'q4',
+            question: 'What should happen during lightning or other inclement weather?',
+            options: [
+              'Continue operating if the operator is wearing PPE.',
+              'Lower the mast, isolate the machine, and pause work until conditions are suitable.',
+              'Move the rig faster to get the task done.',
+              'Only stop if the supervisor is already on site.'
+            ],
+            correctIndex: 1,
+            explanation: 'The PRA directs the crew to fold down the mast and isolate the machine in inclement weather.'
+          },
+          {
+            id: 'q5',
+            question: 'What hearing control is required during machine operation?',
+            options: [
+              'No control is needed because the rig is below exposure limits.',
+              'Operators can choose their own hearing practice.',
+              'Hearing protection must be worn during operation.',
+              'Only visitors need hearing protection.'
+            ],
+            correctIndex: 2,
+            explanation: 'The assessment references noise up to 97 dBA and requires hearing protection during operation.'
+          },
+          {
+            id: 'q6',
+            question: 'Why is VOC important for P399 operators?',
+            options: [
+              'It proves the operator is trained and competent to manage the plant safely.',
+              'It replaces the need for maintenance inspections.',
+              'It is only needed when a visitor is present.',
+              'It applies to supervisors only.'
+            ],
+            correctIndex: 0,
+            explanation: 'The PRA identifies untrained or incompetent operation as a hazard and requires VOC with annual reassessment.'
+          },
+          {
+            id: 'q7',
+            question: 'If hydraulic fluid or diesel leaks onto hot exhaust components, what serious hazard can result?',
+            options: [
+              'Noise exposure',
+              'Fire',
+              'Ergonomic strain',
+              'Loss of communication'
+            ],
+            correctIndex: 1,
+            explanation: 'The fire section of the PRA specifically notes the risk of fluid contacting hot parts.'
+          }
+        ]
+      })
     },
     create: {
       id: '00000000-0000-0000-0000-000000000002',
-      title: 'Plant Risk Assessment Review',
+      title: 'P399 Plant Risk Assessment Review',
       mode: 'INDIVIDUAL',
       category: 'PLANT',
-      description: 'Review how to read, understand, and apply a plant risk assessment before work starts.',
+      description: 'Review the P399 Sonic Drilling Rig plant risk assessment, key hazards, current controls, and operator responsibilities before work starts.',
       learningObjectives: [
-        'Identify the purpose of a plant risk assessment and when it must be reviewed.',
-        'Recognise key hazards, controls, and responsibilities listed in the assessment.',
-        'Confirm how to respond when site conditions or plant configuration differ from the assessment.',
-        'Check understanding with a short end-of-module quiz.'
+        'Identify the purpose of the P399 plant risk assessment and the signoff expectations before use.',
+        'Recognise the main hazards and controls for the Geoprobe 8150LS Sonic Drilling Rig.',
+        'Explain operator, supervisor, and visitor responsibilities identified in the assessment.',
+        'Review understanding with an end-of-module quiz based on the real risk assessment.'
       ].join('\n'),
-      estimatedMinutes: 20,
-      contentBody: [
-        'Plant Risk Assessment Review',
-        '',
-        'Section 1: Why this matters',
-        'A plant risk assessment is used to identify hazards associated with operating, transporting, setting up, maintaining, and working around plant. It helps the crew understand what could go wrong, what controls must be in place, and who is responsible for checking them.',
-        '',
-        'Before starting work, the learner should review the assessment and confirm it matches the actual task, plant, ground conditions, and work area.',
-        '',
-        'Section 2: What to look for in the assessment',
-        'When reviewing a plant risk assessment, check the following:',
-        '- The plant and task are clearly identified.',
-        '- The main hazards are listed, including movement, crush points, overhead services, ground conditions, stored energy, people-plant interaction, and environmental risks.',
-        '- The required controls are practical, specific, and can actually be applied on site.',
-        '- Required PPE, exclusion zones, permits, isolations, and communication steps are described.',
-        '- Emergency actions and escalation points are clear.',
-        '',
-        'Section 3: Your responsibilities as a learner/operator',
-        'The learner should be able to explain:',
-        '- What hazards are present for the planned task.',
-        '- What controls must be in place before operating.',
-        '- What to do if a control cannot be implemented.',
-        '- When to stop work and ask for the risk assessment to be reviewed or updated.',
-        '',
-        'If the assessment does not match the job, do not treat it as a tick-box exercise. Stop, raise the issue, and make sure the assessment is updated before continuing.',
-        '',
-        'Section 4: Signs the assessment needs to be reviewed',
-        'The assessment should be reviewed when:',
-        '- The plant attachment, configuration, or operating method changes.',
-        '- Ground conditions, weather, traffic flow, or access conditions are different from the plan.',
-        '- New people, contractors, or adjacent work activities create extra risk.',
-        '- A hazard or near miss is identified that is not already covered.',
-        '',
-        'Section 5: Practical review checklist',
-        'Before work starts, ask yourself:',
-        '1. Do I understand the task and the plant being used?',
-        '2. Do the listed hazards match what I can see on site?',
-        '3. Are the controls available and in place right now?',
-        '4. Do I know the limits, exclusion zones, and communication method?',
-        '5. Do I know when to stop and escalate?',
-        '',
-        'Quiz Section: Review your learning',
-        'Answer these questions before marking the module complete:',
-        '1. What is the purpose of a plant risk assessment?',
-        '2. Name three hazards you would expect to see in a plant risk assessment.',
-        '3. What should you do if the site conditions do not match the assessment?',
-        '4. Why is it important to confirm that controls are actually in place, not just written down?',
-        '5. Give one example of a change that should trigger a review of the assessment.',
-        '',
-        'Learner reflection:',
-        'Write a short note explaining how you would verify that a plant risk assessment is still valid before starting work.'
-      ].join('\n')
+      estimatedMinutes: 25,
+      contentBody: JSON.stringify({
+        title: 'P399 Plant Risk Assessment Review',
+        subtitle: 'Review the live plant risk assessment for the P399 Geoprobe 8150LS Sonic Drilling Rig before starting work.',
+        slides: [
+          {
+            id: 'hero',
+            type: 'hero',
+            eyebrow: 'Plant category',
+            title: 'Know the risk before you operate P399',
+            body: 'This module walks the learner through the real plant risk assessment for the Sonic Drilling Rig so they can recognise hazards, confirm controls, and sign off with confidence.',
+            meta: [
+              'PRA Number 005',
+              'Plant type: Sonic Drilling Rig',
+              'Make / model: Geoprobe 8150LS',
+              'Asset number: P399'
+            ],
+            fact: 'Risk = likelihood x consequence'
+          },
+          {
+            id: 'signoff',
+            type: 'checklist',
+            eyebrow: 'Pre-start review',
+            title: 'The assessment must be reviewed before use',
+            checklist: [
+              'Confirm the plant is designed to perform the task.',
+              'Check whether the plant has been modified from OEM condition.',
+              'Confirm the plant is in good working condition.',
+              'Make sure action items from plant checks are closed out.',
+              'Sign off only when the plant is safe to operate.'
+            ]
+          },
+          {
+            id: 'hazards',
+            type: 'bullets',
+            eyebrow: 'Key hazards',
+            title: 'What can seriously hurt people around this rig?',
+            bullets: [
+              'Unexpected movement and people in the line of fire.',
+              'Entanglement, crushing, trapping, cutting, and puncture hazards.',
+              'Exposure to high-pressure hydraulic systems.',
+              'Slips, trips, and falls around ancillary equipment or from climbing on the rig.',
+              'Fire from hydraulic or diesel leaks contacting hot components.',
+              'Weather, noise, and hazardous substances affecting safe operation.'
+            ]
+          },
+          {
+            id: 'controls',
+            type: 'bullets',
+            eyebrow: 'Controls in place',
+            title: 'Current controls already required by the PRA',
+            bullets: [
+              'Operators must know the PRA, machine manual, signage, and rotary sonic rig JSA.',
+              'Crew need clear line of sight, clear communication, and a pre-shift toolbox meeting.',
+              'Visitors must be inducted and kept clear of the exclusion zone unless briefed.',
+              'Routine maintenance, inspections, and annual component checks are required.',
+              'Hearing protection is mandatory during operation.',
+              'In bad weather, fold down the mast and isolate the machine.'
+            ]
+          },
+          {
+            id: 'follow-up',
+            type: 'bullets',
+            eyebrow: 'Ongoing requirements',
+            title: 'What still has to happen after the PRA is issued?',
+            bullets: [
+              'Annual JSA review and refresher training.',
+              'Annual VOC for operators.',
+              'Daily pre-shift inspection using QuipCheck.',
+              'Visitor briefing linked to the daily toolbox meeting.',
+              'Fire extinguisher checks included in pre-start inspections.',
+              'Hazardous substances register and MSDS sheets reviewed regularly.'
+            ]
+          },
+          {
+            id: 'ready-check',
+            type: 'checklist',
+            eyebrow: 'Before operating',
+            title: 'Final readiness check for the learner',
+            checklist: [
+              'I know the task, plant, and main hazards.',
+              'I have reviewed the PRA and JSA.',
+              'Communication method and exclusion zones are clear.',
+              'Pre-start checks, including QuipCheck, are complete.',
+              'Required PPE is on and site/weather conditions are suitable.',
+              'I know when to stop and escalate concerns.'
+            ]
+          }
+        ],
+        quiz: [
+          {
+            id: 'q1',
+            question: 'Why must personnel review and sign off the P399 plant risk assessment before work starts?',
+            options: [
+              'To confirm they understand the hazards and controls for the task and plant.',
+              'Only to satisfy a paperwork requirement for the office.',
+              'Because the operator manual cannot be used on site.',
+              'To replace the need for a toolbox meeting.'
+            ],
+            correctIndex: 0,
+            explanation: 'The signoff shows the learner has reviewed the PRA and understands the controls that must be in place before operating.'
+          },
+          {
+            id: 'q2',
+            question: 'What is the required control for visitors who may be struck if they stand too close to the rig?',
+            options: [
+              'Let them approach once drilling has started.',
+              'Induct them to rig risks and keep the exclusion zone clear.',
+              'Ask the driller to work faster so the exposure time is shorter.',
+              'Use hand signals only after the visitor is inside the work area.'
+            ],
+            correctIndex: 1,
+            explanation: 'The PRA specifically calls for visitor induction and a clear exclusion zone.'
+          },
+          {
+            id: 'q3',
+            question: 'What daily inspection tool is identified in the assessment for pre-shift checks?',
+            options: [
+              'ShiftTrack',
+              'RigBoard',
+              'QuipCheck',
+              'PlantPass'
+            ],
+            correctIndex: 2,
+            explanation: 'The risk assessment names QuipCheck as the daily pre-shift inspection and reporting tool.'
+          },
+          {
+            id: 'q4',
+            question: 'What should happen during lightning or other inclement weather?',
+            options: [
+              'Continue operating if the operator is wearing PPE.',
+              'Lower the mast, isolate the machine, and pause work until conditions are suitable.',
+              'Move the rig faster to get the task done.',
+              'Only stop if the supervisor is already on site.'
+            ],
+            correctIndex: 1,
+            explanation: 'The PRA directs the crew to fold down the mast and isolate the machine in inclement weather.'
+          },
+          {
+            id: 'q5',
+            question: 'What hearing control is required during machine operation?',
+            options: [
+              'No control is needed because the rig is below exposure limits.',
+              'Operators can choose their own hearing practice.',
+              'Hearing protection must be worn during operation.',
+              'Only visitors need hearing protection.'
+            ],
+            correctIndex: 2,
+            explanation: 'The assessment references noise up to 97 dBA and requires hearing protection during operation.'
+          },
+          {
+            id: 'q6',
+            question: 'Why is VOC important for P399 operators?',
+            options: [
+              'It proves the operator is trained and competent to manage the plant safely.',
+              'It replaces the need for maintenance inspections.',
+              'It is only needed when a visitor is present.',
+              'It applies to supervisors only.'
+            ],
+            correctIndex: 0,
+            explanation: 'The PRA identifies untrained or incompetent operation as a hazard and requires VOC with annual reassessment.'
+          },
+          {
+            id: 'q7',
+            question: 'If hydraulic fluid or diesel leaks onto hot exhaust components, what serious hazard can result?',
+            options: [
+              'Noise exposure',
+              'Fire',
+              'Ergonomic strain',
+              'Loss of communication'
+            ],
+            correctIndex: 1,
+            explanation: 'The fire section of the PRA specifically notes the risk of fluid contacting hot parts.'
+          }
+        ]
+      })
     }
   });
 
@@ -356,9 +601,9 @@ async function main() {
   }
 
   console.log('Seed complete.');
-  console.log('Users: stempleton / tlubbe / gcossar + test accounts');
+  console.log('Users: Sean Templeton / Tom Lubbe / Greg Cossar');
   console.log('Module: Drilling Fundamentals (HYBRID) -- 8 sections');
-  console.log('Module: Plant Risk Assessment Review (INDIVIDUAL) -- Plant category with end-of-module quiz');
+  console.log('Module: P399 Plant Risk Assessment Review (INDIVIDUAL) -- Plant category with end-of-module quiz');
   console.log('  DT-FUND-01  -> SESSION');
   console.log('  DT-FLUID-01 -> QUIZ');
   console.log('  DT-HEAVE-01 -> SESSION');
