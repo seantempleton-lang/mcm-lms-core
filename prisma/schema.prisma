@@ -73,6 +73,7 @@ model Module {
   id          String     @id @default(uuid()) @db.Uuid
   title       String
   mode        ModuleMode @default(INDIVIDUAL)
+  category String @default("GEOTECH")
   description String?
   learningObjectives String?
   estimatedMinutes Int?

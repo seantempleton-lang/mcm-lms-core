@@ -9,6 +9,7 @@ export const competencyPatchSchema = competencyCreateSchema.partial();
 export const moduleCreateSchema = z.object({
   title:z.string().min(3),
   mode:z.enum(['INDIVIDUAL','FACILITATED','HYBRID']).optional(),
+  category:z.string().min(2).optional(),
   description:z.string().optional(),
   learningObjectives:z.string().max(4000).optional(),
   estimatedMinutes:z.number().int().positive().max(1440).optional(),

@@ -204,8 +204,8 @@ async function main() {
   // ── Module upsert ─────────────────────────────────────────────
   const mod = await prisma.module.upsert({
     where:  { id: '00000000-0000-0000-0000-000000000001' },
-    update: { title: 'Drilling Fundamentals', mode: 'HYBRID', description: JSON.stringify(moduleContent) },
-    create: { id: '00000000-0000-0000-0000-000000000001', title: 'Drilling Fundamentals', mode: 'HYBRID', description: JSON.stringify(moduleContent) }
+    update: { title: 'Drilling Fundamentals', mode: 'HYBRID', category: 'GEOTECH', description: JSON.stringify(moduleContent) },
+    create: { id: '00000000-0000-0000-0000-000000000001', title: 'Drilling Fundamentals', mode: 'HYBRID', category: 'GEOTECH', description: JSON.stringify(moduleContent) }
   });
 
   // ── Competency mappings ───────────────────────────────────────
