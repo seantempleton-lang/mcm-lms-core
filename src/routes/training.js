@@ -11,6 +11,34 @@ import { asyncHandler, HttpError, mapPrismaError } from '../utils/http.js';
 
 export const trainingRouter = Router();
 
+function buildLearnerReport(assignments, awards) {
+  const summary = {
+    assigned: assignments.length,
+    inProgress: assignments.filter((item) => item.status === 'IN_PROGRESS').length,
+    pendingReview: assignments.filter((item) => item.status === 'PENDING_REVIEW').length,
+    completed: assignments.filter((item) => item.status === 'COMPLETED').length,
+    competenciesAwarded: awards.length,
+  };
+
+  return {
+    summary,
+    completedAssignments: assignments
+      .filter((item) => item.status === 'COMPLETED')
+      .map((item) => ({
+        id: item.id,
+        moduleTitle: item.module.title,
+        reviewedAt: item.reviewedAt,
+        reviewNotes: item.reviewNotes,
+        competencies: item.module.competencies.map((mapping) => ({
+          id: mapping.competency.id,
+          code: mapping.competency.code,
+          title: mapping.competency.title,
+        })),
+      })),
+    recentAwards: awards.slice(0, 10),
+  };
+}
+
 trainingRouter.get('/my', requireAuth, asyncHandler(async (req, res) => {
   const items = await prisma.trainingAssignment.findMany({
     where: { learnerId: req.user.sub },
@@ -21,6 +49,28 @@ trainingRouter.get('/my', requireAuth, asyncHandler(async (req, res) => {
     orderBy: [{ assignedAt: 'desc' }]
   });
   res.json(items);
+}));
+
+trainingRouter.get('/my/report', requireAuth, asyncHandler(async (req, res) => {
+  const [assignments, awards] = await Promise.all([
+    prisma.trainingAssignment.findMany({
+      where: { learnerId: req.user.sub },
+      include: {
+        module: { include: { competencies: { include: { competency: true } } } },
+      },
+      orderBy: [{ assignedAt: 'desc' }]
+    }),
+    prisma.competencyAward.findMany({
+      where: { userId: req.user.sub },
+      include: {
+        competency: { select: { id: true, code: true, title: true, category: true } },
+        awardedBy: { select: { id: true, name: true } }
+      },
+      orderBy: [{ awardedAt: 'desc' }]
+    })
+  ]);
+
+  res.json(buildLearnerReport(assignments, awards));
 }));
 
 trainingRouter.get('/', requireAuth, requireRole('SUPERVISOR', 'ADMIN'), asyncHandler(async (req, res) => {
@@ -35,6 +85,41 @@ trainingRouter.get('/', requireAuth, requireRole('SUPERVISOR', 'ADMIN'), asyncHa
     orderBy: [{ status: 'asc' }, { assignedAt: 'desc' }]
   });
   res.json(items);
+}));
+
+trainingRouter.get('/report/:learnerId', requireAuth, requireRole('SUPERVISOR', 'ADMIN'), asyncHandler(async (req, res) => {
+  const learnerId = req.params.learnerId;
+  const [learner, assignments, awards] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: learnerId },
+      select: { id: true, name: true, email: true, role: true }
+    }),
+    prisma.trainingAssignment.findMany({
+      where: { learnerId },
+      include: {
+        module: { include: { competencies: { include: { competency: true } } } },
+        assignedBy: { select: { id: true, name: true } }
+      },
+      orderBy: [{ assignedAt: 'desc' }]
+    }),
+    prisma.competencyAward.findMany({
+      where: { userId: learnerId },
+      include: {
+        competency: { select: { id: true, code: true, title: true, category: true } },
+        awardedBy: { select: { id: true, name: true } }
+      },
+      orderBy: [{ awardedAt: 'desc' }]
+    })
+  ]);
+
+  if (!learner || learner.role !== 'LEARNER') {
+    throw new HttpError(404, 'Learner not found');
+  }
+
+  res.json({
+    learner,
+    ...buildLearnerReport(assignments, awards),
+  });
 }));
 
 trainingRouter.post('/', requireAuth, requireRole('SUPERVISOR', 'ADMIN'), asyncHandler(async (req, res) => {
