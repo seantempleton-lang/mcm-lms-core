@@ -11,6 +11,7 @@ import { modulesRouter } from './routes/modules.js';
 import { sessionsRouter } from './routes/sessions.js';
 import { adminRouter } from './routes/admin.js';
 import { matrixRouter } from './routes/matrix.js';
+import { trainingRouter } from './routes/training.js';
 
 const app = express();
 app.use(helmet());
@@ -30,6 +31,7 @@ app.use('/competencies', competenciesRouter);
 app.use('/modules', modulesRouter);
 app.use('/sessions', sessionsRouter);
 app.use('/matrix', matrixRouter);
+app.use('/training', trainingRouter);
 
 app.use((err,req,res,next)=>{
   console.error(err);

@@ -23,3 +23,20 @@ export const userPatchSchema = z.object({
   role:     z.enum(['ADMIN', 'SUPERVISOR', 'LEARNER']).optional(),
   password: z.string().min(8).optional(),
 });
+
+export const trainingAssignmentCreateSchema = z.object({
+  learnerId: z.string().uuid(),
+  moduleId: z.string().uuid(),
+});
+
+export const trainingAssignmentStartSchema = z.object({
+  learnerNotes: z.string().trim().max(2000).optional(),
+});
+
+export const trainingAssignmentSubmitSchema = z.object({
+  learnerNotes: z.string().trim().max(2000).optional(),
+});
+
+export const trainingAssignmentReviewSchema = z.object({
+  reviewNotes: z.string().trim().max(2000).optional(),
+});

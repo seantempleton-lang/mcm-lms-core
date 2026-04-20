@@ -31,6 +31,13 @@ enum AssessmentOutcome {
   NEEDS_FOLLOWUP
 }
 
+enum TrainingAssignmentStatus {
+  ASSIGNED
+  IN_PROGRESS
+  PENDING_REVIEW
+  COMPLETED
+}
+
 model User {
   id           String   @id @default(uuid()) @db.Uuid
   email        String   @unique
@@ -44,6 +51,8 @@ model User {
   awardsGiven         CompetencyAward[] @relation("AwardedBy")
   attendance          SessionAttendance[]
   assessments         SessionAssessment[]
+  trainingAssignments         TrainingAssignment[] @relation("AssignedTrainingTo")
+  learnerTrainingAssignments  TrainingAssignment[] @relation("AssignedTrainingFor")
 }
 
 model Competency {
@@ -69,6 +78,7 @@ model Module {
   updatedAt   DateTime @updatedAt
   competencies ModuleCompetency[]
   sessions     TrainingSession[]
+  trainingAssignments TrainingAssignment[]
 }
 
 model ModuleCompetency {
@@ -136,4 +146,23 @@ model CompetencyAward {
   awardedBy  User       @relation("AwardedBy", fields: [awardedById], references: [id], onDelete: Cascade)
   session    TrainingSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
   @@unique([userId, competencyId, sessionId])
+}
+
+model TrainingAssignment {
+  id           String                   @id @default(uuid()) @db.Uuid
+  learnerId    String                   @db.Uuid
+  moduleId     String                   @db.Uuid
+  assignedById String                   @db.Uuid
+  status       TrainingAssignmentStatus @default(ASSIGNED)
+  learnerNotes String?
+  reviewNotes  String?
+  assignedAt   DateTime                 @default(now())
+  startedAt    DateTime?
+  submittedAt  DateTime?
+  reviewedAt   DateTime?
+  updatedAt    DateTime                 @updatedAt
+  learner      User                     @relation("AssignedTrainingFor", fields: [learnerId], references: [id], onDelete: Cascade)
+  module       Module                   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  assignedBy   User                     @relation("AssignedTrainingTo", fields: [assignedById], references: [id], onDelete: Cascade)
+  @@unique([learnerId, moduleId])
 }
