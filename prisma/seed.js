@@ -77,6 +77,17 @@ async function main() {
     }
   });
 
+  const hseManualHandling = await prisma.competency.upsert({
+    where:  { code: 'HSE-MH-01' },
+    update: {},
+    create: {
+      code:        'HSE-MH-01',
+      title:       'Safe Manual Handling Techniques',
+      category:    'HSE / Manual Handling',
+      description: 'Understands the manual handling risks, controls, lifting expectations, and document review requirements set out in the McMillan JSA for general manual work, hand auger, and small plant.'
+    }
+  });
+
   // ── Module content ────────────────────────────────────────────
   // Source: Drilling Fundamentals.pptx (11 Jan 2023, 36 Hickory Place, Christchurch)
   const moduleContent = {
@@ -565,6 +576,191 @@ async function main() {
     ]
   };
 
+  const manualHandlingDeck = {
+    title: 'Safe Manual Handling Techniques',
+    subtitle: 'Based on the McMillan JSA for General Manual Work, Hand Auger and Small Plant, reviewed 4 March 2024.',
+    slides: [
+      {
+        id: 'hero',
+        type: 'hero',
+        eyebrow: 'HSE module',
+        title: 'Safe manual handling techniques',
+        body: 'Manual handling injuries usually build from awkward posture, sustained force, repetitive movement, unstable loads, and trying to push through without the right aid or support. This module turns the JSA into a short learner pathway before the learner reviews the controlled document itself.',
+        fact: 'JSA reviewed 4 March 2024',
+        meta: [
+          'Manual work, hand auger, and small plant',
+          'Core lifting controls and work area discipline',
+          'Document review before signoff and quiz'
+        ]
+      },
+      {
+        id: 'risk-factors',
+        type: 'bullets',
+        eyebrow: 'Manual handling risks',
+        title: 'What creates manual handling injuries on site',
+        bullets: [
+          'Twisted, stooped, awkward, or asymmetrical postures can lead to serious back injury and musculoskeletal strain.',
+          'Rigid or prolonged postures, repetitive handling, and long tasks without enough breaks increase fatigue and injury risk.',
+          'Sudden, jerky, or uncontrolled movement can turn a routine lift into an acute strain or sprain.',
+          'High force, heavy loads, and awkward loads are higher risk and should trigger lifting aids or team lifting.',
+          'Slippery, uneven, hot, wet, noisy, or windy environments can make a manual handling task less stable and less safe.'
+        ],
+        fact: 'Poor posture plus force equals higher risk'
+      },
+      {
+        id: 'controls',
+        type: 'bullets',
+        eyebrow: 'Core controls',
+        title: 'What the JSA expects crews to do',
+        bullets: [
+          'Use lifting aids and hydraulic lifting cables wherever possible when force or load size is high.',
+          'Where lifting equipment cannot reasonably be used, implement a two person lift.',
+          'Take regular pauses and rest breaks for repetitive or sustained work.',
+          'Keep work areas clean, clear, and tidy, and maintain an appropriate work perimeter around active tasks.',
+          'Use correct PPE and only operate tools and small plant when trained and competent.'
+        ],
+        fact: 'Aid first, team lift second'
+      },
+      {
+        id: 'lifting-loads',
+        type: 'checklist',
+        eyebrow: 'Lifting loads',
+        title: 'Checks that matter before lifting casing or drilling gear',
+        checklist: [
+          'Know the load weight and the capability of the gear handling it.',
+          'Choose the slinging method and confirm slings, strops, or chains are suitable and in good condition.',
+          'Make sure competent people attach and operate the lifting gear.',
+          'Clear the immediate area before the lift starts.',
+          'Never pass, stand, or work under a suspended load.'
+        ],
+        meta: [
+          'Know the load',
+          'Use suitable gear',
+          'Clear the area'
+        ]
+      },
+      {
+        id: 'site-conditions',
+        type: 'bullets',
+        eyebrow: 'Work environment',
+        title: 'Manual handling is affected by the whole job setup',
+        bullets: [
+          'Sites must be checked before work starts for housekeeping issues, buried services, hand clearing needs, and overhead services.',
+          'No rig is to be operated within 4 metres of overhead power cables.',
+          'Pedestrian and traffic exposure should be controlled with fencing, signage, and a restricted work area wherever possible.',
+          'Fuel sites or uncertain service locations require stronger service location controls, including scanning and hand or vacuum clearing.',
+          'Work teams should normally comprise two or more people, with others nearby if the job setup is constrained.'
+        ],
+        fact: 'A good lift starts with a good setup'
+      },
+      {
+        id: 'review-prompt',
+        type: 'checklist',
+        eyebrow: 'Document review',
+        title: 'Before you continue, review the actual JSA',
+        checklist: [
+          'Open the controlled document: JSA - General Manual Work - Hand Auger and Small Plant.',
+          'Review the PPE, services, and site setup requirements.',
+          'Read the manual handling, lifting loads, environment, and people sections in full.',
+          'Check the controls for suspended loads, heavy or awkward items, repetitive handling, and work around services.',
+          'Confirm you are familiar with the signoff expectation on the JSA, SSSP, or PSI before attempting the quiz.'
+        ],
+        meta: [
+          'Read the actual JSA',
+          'Do not rely on slides alone',
+          'Quiz checks familiarity with the document'
+        ],
+        fact: 'Controlled document review required'
+      }
+    ],
+    quiz: [
+      {
+        id: 'q1',
+        question: 'According to the JSA, what should be used wherever possible when a task involves high or sustained force or heavy awkward loads?',
+        options: [
+          'Lifting aids and hydraulic lifting cables',
+          'A faster lift so the load is handled for less time',
+          'Only a verbal warning to the crew',
+          'No change, because technique alone is always enough'
+        ],
+        correctIndex: 0,
+        explanation: 'The JSA states that lifting aids and hydraulic lifting cables should be used wherever possible, with a two person lift used where equipment cannot be used.'
+      },
+      {
+        id: 'q2',
+        question: 'If lifting equipment cannot reasonably be used, what control does the JSA require?',
+        options: [
+          'The lightest worker should lift alone',
+          'A two person lift must be implemented',
+          'The task should be done only at the end of the shift',
+          'The load should be dragged rather than lifted'
+        ],
+        correctIndex: 1,
+        explanation: 'The JSA repeatedly calls for a two person lift when lifting aids cannot be used.'
+      },
+      {
+        id: 'q3',
+        question: 'What is the rule for people around a suspended load?',
+        options: [
+          'They may pass under it if the lift is brief',
+          'They may stand under it if they are wearing helmets',
+          'No one should pass, stand, or work under a suspended load',
+          'Only the supervisor may stand under it'
+        ],
+        correctIndex: 2,
+        explanation: 'The lifting section states that under no circumstances should anyone pass, stand, or work under a suspended load.'
+      },
+      {
+        id: 'q4',
+        question: 'How close may a rig operate to overhead power cables under this JSA?',
+        options: [
+          'Within 1 metre if a spotter is present',
+          'Within 2 metres if the ground is dry',
+          'Within 4 metres if insulated gloves are worn',
+          'It must not be operated within 4 metres of overhead power cables'
+        ],
+        correctIndex: 3,
+        explanation: 'The JSA states that no rig will be operated within 4 metres of overhead power cables.'
+      },
+      {
+        id: 'q5',
+        question: 'What does the JSA say about repetitive handling or long manual work without enough rest?',
+        options: [
+          'It should continue until the task is complete',
+          'Regular pauses and rest periods should be taken',
+          'Only new staff need breaks',
+          'Breaks are needed only in hot weather'
+        ],
+        correctIndex: 1,
+        explanation: 'The manual handling section lists variation of tasks, pauses, and regular rest periods as key controls.'
+      },
+      {
+        id: 'q6',
+        question: 'What additional control is mandatory on fuel sites or where services cannot be accurately located?',
+        options: [
+          'Ground penetrating radar and or hand or vacuum clearing',
+          'Only a visual check from the vehicle',
+          'Proceeding slowly with the auger',
+          'A second copy of the site map'
+        ],
+        correctIndex: 0,
+        explanation: 'The services section states that GPR and or hand or vacuum clearing is mandatory on fuel sites, when required by the client, or when services cannot be accurately located.'
+      },
+      {
+        id: 'q7',
+        question: 'What should workers do if a dog is present and not restrained on a domestic site?',
+        options: [
+          'Approach carefully and continue if it seems calm',
+          'Do not enter the property until the dog is restrained',
+          'Ask a consultant to distract the dog',
+          'Use the restricted work area only'
+        ],
+        correctIndex: 1,
+        explanation: 'The JSA says do not enter the property if a dog is on site and not restrained.'
+      }
+    ]
+  };
+
   // ── Module upsert ─────────────────────────────────────────────
   const mod = await prisma.module.upsert({
     where:  { id: '00000000-0000-0000-0000-000000000001' },
@@ -627,6 +823,37 @@ async function main() {
       ].join('\n'),
       estimatedMinutes: 26,
       contentBody: JSON.stringify(geotechIntroDeck)
+    }
+  });
+
+  const manualHandlingModule = await prisma.module.upsert({
+    where:  { id: '00000000-0000-0000-0000-000000000004' },
+    update: {
+      title: 'Safe Manual Handling Techniques',
+      mode: 'INDIVIDUAL',
+      category: 'HSE',
+      description: 'Introduces the manual handling risks and controls in the McMillan JSA for general manual work, hand auger, and small plant, then directs the learner to review the controlled document before completing a familiarity quiz.',
+      learningObjectives: [
+        'Recognise the main manual handling risk factors described in the JSA.',
+        'Identify the controls expected for heavy, awkward, repetitive, and suspended loads.',
+        'Review the actual JSA before confirming familiarity through a multi-choice quiz.'
+      ].join('\n'),
+      estimatedMinutes: 18,
+      contentBody: JSON.stringify(manualHandlingDeck)
+    },
+    create: {
+      id: '00000000-0000-0000-0000-000000000004',
+      title: 'Safe Manual Handling Techniques',
+      mode: 'INDIVIDUAL',
+      category: 'HSE',
+      description: 'Introduces the manual handling risks and controls in the McMillan JSA for general manual work, hand auger, and small plant, then directs the learner to review the controlled document before completing a familiarity quiz.',
+      learningObjectives: [
+        'Recognise the main manual handling risk factors described in the JSA.',
+        'Identify the controls expected for heavy, awkward, repetitive, and suspended loads.',
+        'Review the actual JSA before confirming familiarity through a multi-choice quiz.'
+      ].join('\n'),
+      estimatedMinutes: 18,
+      contentBody: JSON.stringify(manualHandlingDeck)
     }
   });
 
@@ -1031,11 +1258,19 @@ async function main() {
     create: { moduleId: geotechIntroModule.id, competencyId: gtIntro.id, evidenceType: 'QUIZ' }
   });
 
+  await prisma.moduleCompetency.upsert({
+    where:  { moduleId_competencyId: { moduleId: manualHandlingModule.id, competencyId: hseManualHandling.id } },
+    update: { evidenceType: 'QUIZ' },
+    create: { moduleId: manualHandlingModule.id, competencyId: hseManualHandling.id, evidenceType: 'QUIZ' }
+  });
+
   console.log('Seed complete.');
   console.log('Users: Sean Templeton / Tom Lubbe / Greg Cossar');
   console.log('Module: Drilling Fundamentals (HYBRID) -- 8 sections');
   console.log('Module: Introduction to Geotechnical Drilling (INDIVIDUAL) -- learner foundation module with end-of-module quiz');
+  console.log('Module: Safe Manual Handling Techniques (INDIVIDUAL) -- JSA-based learner module with document review prompt and quiz');
   console.log('Module: P399 Plant Risk Assessment Review (INDIVIDUAL) -- Plant category with end-of-module quiz');
+  console.log('  HSE-MH-01   -> QUIZ');
   console.log('  GT-INTRO-01 -> QUIZ');
   console.log('  DT-FUND-01  -> SESSION');
   console.log('  DT-FLUID-01 -> QUIZ');
