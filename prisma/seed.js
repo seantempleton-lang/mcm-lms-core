@@ -66,6 +66,17 @@ async function main() {
     }
   });
 
+  const gtIntro = await prisma.competency.upsert({
+    where:  { code: 'GT-INTRO-01' },
+    update: {},
+    create: {
+      code:        'GT-INTRO-01',
+      title:       'Introduction to Geotechnical Drilling',
+      category:    'Geotech / Fundamentals',
+      description: 'Explains the purpose of geotechnical drilling, the normal field workflow, and the behaviours that protect sample quality, traceability, and useful engineering outcomes.'
+    }
+  });
+
   // ── Module content ────────────────────────────────────────────
   // Source: Drilling Fundamentals.pptx (11 Jan 2023, 36 Hickory Place, Christchurch)
   const moduleContent = {
@@ -400,6 +411,160 @@ async function main() {
     ]
   };
 
+  const geotechIntroDeck = {
+    title: 'Introduction to Geotechnical Drilling',
+    subtitle: 'A foundation module for new learners covering why geotechnical drilling is done, how a typical job runs, and what field discipline protects useful project outcomes.',
+    slides: [
+      {
+        id: 'hero',
+        type: 'hero',
+        eyebrow: 'Geotechnical drilling',
+        title: 'Introduction to geotechnical drilling',
+        body: 'Geotechnical drilling is not just about making a hole. The job is to recover dependable information about the ground so engineers, geologists, and clients can make better decisions about design, construction, and risk.',
+        fact: 'Ground data with purpose',
+        meta: [
+          'Why geotechnical drilling is commissioned',
+          'What the field team needs to recover and record',
+          'How good field habits protect the value of the job'
+        ]
+      },
+      {
+        id: 'purpose',
+        type: 'content',
+        eyebrow: 'Purpose',
+        title: 'Why clients commission geotechnical drilling',
+        body: 'Geotechnical drilling supports investigations for foundations, earthworks, pavements, retaining structures, slope stability, instrumentation, and construction planning. The client is paying for reliable ground information, not simply drilled depth, so sample quality and accurate field records matter from the first run onward.',
+        meta: [
+          'Supports design and planning',
+          'Reduces uncertainty in the ground model',
+          'Turns field observations into usable evidence'
+        ]
+      },
+      {
+        id: 'workflow',
+        type: 'bullets',
+        eyebrow: 'Workflow',
+        title: 'What a normal geotechnical drilling job looks like',
+        bullets: [
+          'Review the scope, bore location, access, permits, and service information before mobilising.',
+          'Set up the rig safely and confirm the planned method, tooling, and depth control.',
+          'Advance the hole while monitoring drilling response, groundwater, and changing ground conditions.',
+          'Recover samples carefully and keep every interval identifiable and traceable.',
+          'Log observations promptly and hand over records in a form others can interpret.'
+        ],
+        fact: 'Plan, set up, drill, recover, record'
+      },
+      {
+        id: 'outputs',
+        type: 'bullets',
+        eyebrow: 'Outputs',
+        title: 'What the engineer and client rely on from the field team',
+        bullets: [
+          'Correct bore location, interval control, and depth accuracy.',
+          'Representative samples that have not been mixed, damaged, or mislabelled.',
+          'Clear notes on strata changes, sample recovery, groundwater, and drilling behaviour.',
+          'Prompt escalation when unexpected conditions affect safety, method, or data quality.',
+          'Consistent sample identification and storage so later interpretation remains trustworthy.'
+        ],
+        fact: 'Quality leaves the site with the samples and notes'
+      },
+      {
+        id: 'habits',
+        type: 'checklist',
+        eyebrow: 'Field discipline',
+        title: 'Daily habits that protect geotechnical quality',
+        checklist: [
+          'Confirm the task, expected sample type, and interval before starting the run.',
+          'Keep the work area controlled and raise changing ground conditions early.',
+          'Handle samples carefully and maintain clear depth and box identification.',
+          'Record observations while they are fresh rather than from memory later.',
+          'Escalate poor recovery, instability, or uncertainty before the hole quality is compromised.'
+        ],
+        meta: [
+          'Safe work',
+          'Reliable samples',
+          'Accurate records'
+        ]
+      },
+      {
+        id: 'why-discipline-matters',
+        type: 'content',
+        eyebrow: 'Why it matters',
+        title: 'Small field errors can weaken the whole investigation',
+        body: 'If samples are mixed, depths drift, groundwater observations are missed, or logs are delayed, the final ground model can become less reliable. That can lead to rework, reduce client confidence, and make engineering decisions harder. Consistent field discipline is what turns drilling activity into dependable geotechnical information.',
+        fact: 'Accuracy before speed',
+        tone: 'warning',
+        meta: [
+          'Protect the ground model',
+          'Reduce avoidable rework',
+          'Keep decisions evidence-based'
+        ]
+      }
+    ],
+    quiz: [
+      {
+        id: 'q1',
+        question: 'What is the main purpose of geotechnical drilling?',
+        options: [
+          'To collect dependable ground information that supports engineering and construction decisions',
+          'To drill as quickly as possible regardless of sample quality',
+          'To replace the design work completed by engineers',
+          'To avoid the need for field records'
+        ],
+        correctIndex: 0,
+        explanation: 'Geotechnical drilling is valuable because it produces reliable information about subsurface conditions, not just drilled metres.'
+      },
+      {
+        id: 'q2',
+        question: 'Which sequence best reflects a normal geotechnical drilling workflow?',
+        options: [
+          'Plan, set up, drill, recover samples, and record observations',
+          'Drive to site, drill fast, and write the notes later from memory',
+          'Recover samples first, then choose the bore location',
+          'Install instrumentation before checking access and services'
+        ],
+        correctIndex: 0,
+        explanation: 'A controlled job runs from planning through setup, drilling, recovery, and timely recording.'
+      },
+      {
+        id: 'q3',
+        question: 'Why is sample identification important?',
+        options: [
+          'It keeps each recovered interval traceable to the correct hole and depth',
+          'It mainly makes the boxes look tidy for storage',
+          'It removes the need for bore logging',
+          'It only matters after the project is complete'
+        ],
+        correctIndex: 0,
+        explanation: 'Traceability allows later reviewers to trust that each sample came from the recorded interval.'
+      },
+      {
+        id: 'q4',
+        question: 'What should happen if drilling response or ground conditions change unexpectedly?',
+        options: [
+          'Raise it early so the team can review safety, method, and data quality impacts',
+          'Keep going and mention it at the end of the week',
+          'Ignore it unless recovery reaches zero',
+          'Only record it if the client is watching'
+        ],
+        correctIndex: 0,
+        explanation: 'Unexpected ground conditions can affect safety and the value of the investigation, so they should be escalated promptly.'
+      },
+      {
+        id: 'q5',
+        question: 'Why are timely field notes important?',
+        options: [
+          'Because details are lost and less reliable if they are written much later',
+          'Because clients prefer longer reports',
+          'Because logging is optional once the samples are boxed',
+          'Because it replaces the need for competency signoff'
+        ],
+        correctIndex: 0,
+        explanation: 'Prompt notes preserve the details that make samples and field observations useful to others.'
+      }
+    ]
+  };
+
   // ── Module upsert ─────────────────────────────────────────────
   const mod = await prisma.module.upsert({
     where:  { id: '00000000-0000-0000-0000-000000000001' },
@@ -431,6 +596,37 @@ async function main() {
       ].join('\n'),
       estimatedMinutes: 30,
       contentBody: JSON.stringify(drillingFundamentalsDeck)
+    }
+  });
+
+  const geotechIntroModule = await prisma.module.upsert({
+    where:  { id: '00000000-0000-0000-0000-000000000003' },
+    update: {
+      title: 'Introduction to Geotechnical Drilling',
+      mode: 'INDIVIDUAL',
+      category: 'GEOTECH',
+      description: 'Introduces new learners to what geotechnical drilling is, why clients commission it, and the field behaviours that protect sample quality, safety, and useful project outcomes.',
+      learningObjectives: [
+        'Explain the purpose of geotechnical drilling in simple operational terms.',
+        'Describe the typical sequence of a geotechnical drilling job from planning to handover.',
+        'Recognise the field behaviours that support safe work, reliable samples, and accurate records.'
+      ].join('\n'),
+      estimatedMinutes: 26,
+      contentBody: JSON.stringify(geotechIntroDeck)
+    },
+    create: {
+      id: '00000000-0000-0000-0000-000000000003',
+      title: 'Introduction to Geotechnical Drilling',
+      mode: 'INDIVIDUAL',
+      category: 'GEOTECH',
+      description: 'Introduces new learners to what geotechnical drilling is, why clients commission it, and the field behaviours that protect sample quality, safety, and useful project outcomes.',
+      learningObjectives: [
+        'Explain the purpose of geotechnical drilling in simple operational terms.',
+        'Describe the typical sequence of a geotechnical drilling job from planning to handover.',
+        'Recognise the field behaviours that support safe work, reliable samples, and accurate records.'
+      ].join('\n'),
+      estimatedMinutes: 26,
+      contentBody: JSON.stringify(geotechIntroDeck)
     }
   });
 
@@ -829,10 +1025,18 @@ async function main() {
     });
   }
 
+  await prisma.moduleCompetency.upsert({
+    where:  { moduleId_competencyId: { moduleId: geotechIntroModule.id, competencyId: gtIntro.id } },
+    update: { evidenceType: 'QUIZ' },
+    create: { moduleId: geotechIntroModule.id, competencyId: gtIntro.id, evidenceType: 'QUIZ' }
+  });
+
   console.log('Seed complete.');
   console.log('Users: Sean Templeton / Tom Lubbe / Greg Cossar');
   console.log('Module: Drilling Fundamentals (HYBRID) -- 8 sections');
+  console.log('Module: Introduction to Geotechnical Drilling (INDIVIDUAL) -- learner foundation module with end-of-module quiz');
   console.log('Module: P399 Plant Risk Assessment Review (INDIVIDUAL) -- Plant category with end-of-module quiz');
+  console.log('  GT-INTRO-01 -> QUIZ');
   console.log('  DT-FUND-01  -> SESSION');
   console.log('  DT-FLUID-01 -> QUIZ');
   console.log('  DT-HEAVE-01 -> SESSION');
