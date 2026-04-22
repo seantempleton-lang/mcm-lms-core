@@ -5,7 +5,8 @@ import { prisma } from '../prisma.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { asyncHandler, HttpError, mapPrismaError } from '../utils/http.js';
 import { userCreateSchema, userPatchSchema } from '../validators.js';
-import { hashPassword } from '../utils/password.js';
+import { generateRandomPassword, hashPassword } from '../utils/password.js';
+import { generateUniqueUsername } from '../utils/usernames.js';
 
 export const adminRouter = Router();
 const documentsRoot = path.resolve(process.cwd(), 'storage', 'documents');
@@ -70,13 +71,14 @@ adminRouter.get('/users', asyncHandler(async (req, res) => {
   const where = q ? {
     OR: [
       { name:  { contains: q, mode: 'insensitive' } },
+      { username: { contains: q, mode: 'insensitive' } },
       { email: { contains: q, mode: 'insensitive' } },
     ],
   } : undefined;
 
   const users = await prisma.user.findMany({
     where,
-    select: { id: true, name: true, email: true, role: true, createdAt: true },
+    select: { id: true, name: true, username: true, email: true, role: true, createdAt: true },
     orderBy: [{ name: 'asc' }],
   });
 
@@ -89,14 +91,15 @@ adminRouter.post('/users', asyncHandler(async (req, res) => {
   const parsed = userCreateSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json(parsed.error.flatten());
 
-  const { email, name, role, password } = parsed.data;
+  const { email, username, name, role, password } = parsed.data;
+  const nextUsername = username || await generateUniqueUsername(prisma, name);
   const passwordHash = await hashPassword(password);
 
   let user;
   try {
     user = await prisma.user.create({
-      data: { email, name, role, passwordHash },
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      data: { username: nextUsername, email, name, role, passwordHash },
+      select: { id: true, name: true, username: true, email: true, role: true, createdAt: true },
     });
   } catch (err) {
     throw mapPrismaError(err, 'Failed to create user');
@@ -111,7 +114,7 @@ adminRouter.patch('/users/:id', asyncHandler(async (req, res) => {
   const parsed = userPatchSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json(parsed.error.flatten());
 
-  const { password, ...rest } = parsed.data;
+  const { password, username, ...rest } = parsed.data;
 
   // Prevent an admin from accidentally locking themselves out
   if (rest.role && req.params.id === req.user.sub && rest.role !== 'ADMIN') {
@@ -119,6 +122,14 @@ adminRouter.patch('/users/:id', asyncHandler(async (req, res) => {
   }
 
   const data = { ...rest };
+  if (Object.prototype.hasOwnProperty.call(rest, 'email') && rest.email === null) {
+    data.email = null;
+  }
+  if (username) {
+    data.username = username;
+  } else if (rest.name) {
+    data.username = await generateUniqueUsername(prisma, rest.name, req.params.id);
+  }
   if (password) data.passwordHash = await hashPassword(password);
 
   let user;
@@ -126,13 +137,29 @@ adminRouter.patch('/users/:id', asyncHandler(async (req, res) => {
     user = await prisma.user.update({
       where:  { id: req.params.id },
       data,
-      select: { id: true, name: true, email: true, role: true, updatedAt: true },
+      select: { id: true, name: true, username: true, email: true, role: true, updatedAt: true },
     });
   } catch (err) {
     throw mapPrismaError(err, 'Failed to update user');
   }
 
   res.json(user);
+}));
+
+adminRouter.post('/users/:id/reset-password', asyncHandler(async (req, res) => {
+  const nextPassword = generateRandomPassword(10);
+  const passwordHash = await hashPassword(nextPassword);
+
+  try {
+    await prisma.user.update({
+      where: { id: req.params.id },
+      data: { passwordHash },
+    });
+  } catch (err) {
+    throw mapPrismaError(err, 'Failed to reset password');
+  }
+
+  res.json({ password: nextPassword });
 }));
 
 // ── Delete user ─────────────────────────────────────────────────────────────

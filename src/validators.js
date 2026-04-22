@@ -1,5 +1,7 @@
 import { z } from 'zod';
-export const loginSchema = z.object({ email:z.string().email(), password:z.string().min(8) });
+const usernameSchema = z.string().trim().min(3).max(60).regex(/^[A-Za-z0-9]+$/, 'Username must use letters and numbers only');
+
+export const loginSchema = z.object({ username:usernameSchema, password:z.string().min(8) });
 export const sessionCreateSchema = z.object({ moduleId:z.string().uuid(), date:z.string().datetime(), location:z.string().optional(), project:z.string().optional() });
 export const attendancePostSchema = z.object({ attendees: z.array(z.object({ userId:z.string().uuid(), attended:z.boolean().optional() })).min(1) });
 export const assessmentsPostSchema = z.object({ assessments: z.array(z.object({ userId:z.string().uuid(), competencyId:z.string().uuid(), outcome:z.enum(['COMPETENT','NEEDS_FOLLOWUP']), notes:z.string().optional() })).min(1) });
@@ -24,7 +26,8 @@ export const modulePatchSchema = moduleCreateSchema.partial();
 export const moduleCompetenciesPutSchema = z.object({ items: z.array(z.object({ competencyId:z.string().uuid(), evidenceType:z.enum(['COMPLETION','QUIZ','SESSION','SIGNOFF']) })) });
 export const awardSchema = z.object({ userId:z.string().uuid(), evidenceType:z.enum(['COMPLETION','QUIZ','SESSION','SIGNOFF']), sessionId:z.string().uuid().optional(), notes:z.string().optional() });
 export const userCreateSchema = z.object({
-  email:    z.string().email(),
+  username: usernameSchema.optional(),
+  email:    z.string().email().optional(),
   name:     z.string().min(2),
   role:     z.enum(['ADMIN', 'SUPERVISOR', 'LEARNER']),
   password: z.string().min(8),
@@ -32,7 +35,8 @@ export const userCreateSchema = z.object({
 
 export const userPatchSchema = z.object({
   name:     z.string().min(2).optional(),
-  email:    z.string().email().optional(),
+  username: usernameSchema.optional(),
+  email:    z.string().email().optional().nullable(),
   role:     z.enum(['ADMIN', 'SUPERVISOR', 'LEARNER']).optional(),
   password: z.string().min(8).optional(),
 });

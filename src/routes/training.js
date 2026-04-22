@@ -53,7 +53,7 @@ trainingRouter.get('/my', requireAuth, asyncHandler(async (req, res) => {
     where: { learnerId: req.user.sub },
     include: {
       module: { include: { competencies: { include: { competency: true } } } },
-      assignedBy: { select: { id: true, name: true, email: true } }
+      assignedBy: { select: { id: true, name: true, username: true, email: true } }
     },
     orderBy: [{ assignedAt: 'desc' }]
   });
@@ -87,9 +87,9 @@ trainingRouter.get('/', requireAuth, requireRole('SUPERVISOR', 'ADMIN'), asyncHa
   const items = await prisma.trainingAssignment.findMany({
     where: status ? { status } : undefined,
     include: {
-      learner: { select: { id: true, name: true, email: true, role: true } },
+      learner: { select: { id: true, name: true, username: true, email: true, role: true } },
       module: { include: { competencies: { include: { competency: true } } } },
-      assignedBy: { select: { id: true, name: true, email: true } }
+      assignedBy: { select: { id: true, name: true, username: true, email: true } }
     },
     orderBy: [{ status: 'asc' }, { assignedAt: 'desc' }]
   });
@@ -101,7 +101,7 @@ trainingRouter.get('/report/:learnerId', requireAuth, requireRole('SUPERVISOR', 
   const [learner, assignments, awards] = await Promise.all([
     prisma.user.findUnique({
       where: { id: learnerId },
-      select: { id: true, name: true, email: true, role: true }
+      select: { id: true, name: true, username: true, email: true, role: true }
     }),
     prisma.trainingAssignment.findMany({
       where: { learnerId },
@@ -169,9 +169,9 @@ trainingRouter.post('/', requireAuth, requireRole('SUPERVISOR', 'ADMIN'), asyncH
         assignedById: req.user.sub,
       },
       include: {
-        learner: { select: { id: true, name: true, email: true, role: true } },
+        learner: { select: { id: true, name: true, username: true, email: true, role: true } },
         module: { include: { competencies: { include: { competency: true } } } },
-        assignedBy: { select: { id: true, name: true, email: true } }
+        assignedBy: { select: { id: true, name: true, username: true, email: true } }
       }
     });
     res.status(201).json(item);
@@ -203,7 +203,7 @@ trainingRouter.post('/:id/start', requireAuth, requireRole('LEARNER'), asyncHand
     },
     include: {
       module: { include: { competencies: { include: { competency: true } } } },
-      assignedBy: { select: { id: true, name: true, email: true } }
+      assignedBy: { select: { id: true, name: true, username: true, email: true } }
     }
   });
   res.json(item);
@@ -238,7 +238,7 @@ trainingRouter.post('/:id/submit', requireAuth, requireRole('LEARNER'), asyncHan
     },
     include: {
       module: { include: { competencies: { include: { competency: true } } } },
-      assignedBy: { select: { id: true, name: true, email: true } }
+      assignedBy: { select: { id: true, name: true, username: true, email: true } }
     }
   });
   res.json(item);
@@ -304,9 +304,9 @@ trainingRouter.post('/:id/review', requireAuth, requireRole('SUPERVISOR', 'ADMIN
   const item = await prisma.trainingAssignment.findUnique({
     where: { id: assignment.id },
     include: {
-      learner: { select: { id: true, name: true, email: true, role: true } },
+      learner: { select: { id: true, name: true, username: true, email: true, role: true } },
       module: { include: { competencies: { include: { competency: true } } } },
-      assignedBy: { select: { id: true, name: true, email: true } }
+      assignedBy: { select: { id: true, name: true, username: true, email: true } }
     }
   });
   res.json(item);

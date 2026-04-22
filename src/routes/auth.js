@@ -11,8 +11,8 @@ export const authRouter = Router();
 authRouter.post('/login', asyncHandler(async (req,res)=>{
   const parsed = loginSchema.safeParse(req.body);
   if(!parsed.success) return res.status(400).json(parsed.error.flatten());
-  const {email,password} = parsed.data;
-  const user = await prisma.user.findUnique({ where:{email} });
+  const {username,password} = parsed.data;
+  const user = await prisma.user.findUnique({ where:{ username } });
   if(!user) return res.status(401).json({error:'Invalid credentials'});
   const ok = await verifyPassword(password, user.passwordHash);
   if(!ok) return res.status(401).json({error:'Invalid credentials'});
@@ -20,6 +20,6 @@ authRouter.post('/login', asyncHandler(async (req,res)=>{
 }));
 
 authRouter.get('/me', requireAuth, asyncHandler(async (req,res)=>{
-  const me = await prisma.user.findUnique({ where:{ id:req.user.sub }, select:{ id:true,email:true,name:true,role:true,createdAt:true } });
+  const me = await prisma.user.findUnique({ where:{ id:req.user.sub }, select:{ id:true,username:true,email:true,name:true,role:true,createdAt:true } });
   res.json(me);
 }));

@@ -13,13 +13,14 @@ usersRouter.get('/', requireAuth, requireRole('SUPERVISOR','ADMIN'), asyncHandle
   const where = q ? {
     OR: [
       { name: { contains: q, mode: 'insensitive' } },
+      { username: { contains: q, mode: 'insensitive' } },
       { email: { contains: q, mode: 'insensitive' } }
     ]
   } : undefined;
 
   const users = await prisma.user.findMany({
     where,
-    select: { id:true, name:true, email:true, role:true },
+    select: { id:true, name:true, username:true, email:true, role:true },
     orderBy: [{ name: 'asc' }],
     take: 50
   });

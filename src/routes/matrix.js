@@ -19,7 +19,7 @@ matrixRouter.get('/', asyncHandler(async (req, res) => {
 
     prisma.user.findMany({
       where:   { role: { not: 'ADMIN' } },
-      select:  { id: true, name: true, email: true, role: true },
+      select:  { id: true, name: true, username: true, email: true, role: true },
       orderBy: [{ name: 'asc' }],
     }),
 
@@ -59,6 +59,7 @@ matrixRouter.get('/', asyncHandler(async (req, res) => {
   const rows = users.map(user => ({
     id:    user.id,
     name:  user.name,
+    username: user.username,
     email: user.email,
     role:  user.role,
     awards: Object.fromEntries(
@@ -86,7 +87,7 @@ matrixRouter.get('/user/:id', asyncHandler(async (req, res) => {
   const [user, competencies, awards] = await Promise.all([
     prisma.user.findUnique({
       where:  { id: userId },
-      select: { id: true, name: true, email: true, role: true },
+      select: { id: true, name: true, username: true, email: true, role: true },
     }),
 
     prisma.competency.findMany({
@@ -155,7 +156,7 @@ matrixRouter.get('/competency/:code', asyncHandler(async (req, res) => {
       awardedAt:    true,
       evidenceType: true,
       notes:        true,
-      user:     { select: { id: true, name: true, email: true, role: true } },
+      user:     { select: { id: true, name: true, username: true, email: true, role: true } },
       awardedBy:{ select: { id: true, name: true } },
       session:  { select: { id: true, date: true, location: true } },
     },

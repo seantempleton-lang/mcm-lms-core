@@ -8,7 +8,7 @@ export const sessionsRouter = Router();
 
 sessionsRouter.get('/', requireAuth, asyncHandler(async (req,res)=>{
   const items = await prisma.trainingSession.findMany({
-    include:{ module:true, facilitator:{ select:{id:true,name:true,email:true,role:true} }, attendance:true, assessments:true },
+    include:{ module:true, facilitator:{ select:{id:true,name:true,username:true,email:true,role:true} }, attendance:true, assessments:true },
     orderBy:{ date:'desc' }
   });
   res.json(items);
@@ -32,8 +32,8 @@ sessionsRouter.get('/:id', requireAuth, asyncHandler(async (req,res)=>{
     where:{ id:req.params.id },
     include:{
       module:true,
-      facilitator:{ select:{id:true,name:true,email:true,role:true} },
-      attendance:{ include:{ user:{ select:{id:true,name:true,email:true,role:true} } } },
+      facilitator:{ select:{id:true,name:true,username:true,email:true,role:true} },
+      attendance:{ include:{ user:{ select:{id:true,name:true,username:true,email:true,role:true} } } },
       assessments:{ include:{ user:{ select:{id:true,name:true} }, competency:true } }
     }
   });

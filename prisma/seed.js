@@ -1,23 +1,25 @@
 import { PrismaClient } from '@prisma/client';
 import { hashPassword } from '../src/utils/password.js';
+import { buildUsernameFromName } from '../src/utils/usernames.js';
 
 const prisma = new PrismaClient();
 
-async function upsertUser(email, name, role, password) {
+async function upsertUser(name, role, password, email = null) {
   const passwordHash = await hashPassword(password);
+  const username = buildUsernameFromName(name);
   return prisma.user.upsert({
-    where:  { email },
-    update: { name, role, passwordHash },
-    create: { email, name, role, passwordHash }
+    where:  { username },
+    update: { name, role, email, passwordHash },
+    create: { username, email, name, role, passwordHash }
   });
 }
 
 async function main() {
 
   // ── Real users ──────────────────────────────────────────────
-  await upsertUser('stempleton@drilling.co.nz', 'Sean Templeton', 'ADMIN',      'password123!');
-  await upsertUser('tlubbe@drilling.co.nz',     'Tom Lubbe',      'SUPERVISOR', 'password123!');
-  await upsertUser('gcossar@drilling.co.nz',    'Greg Cossar',    'LEARNER',    'password123!');
+  await upsertUser('Sean Templeton', 'ADMIN',      'password123!', 'stempleton@drilling.co.nz');
+  await upsertUser('Tom Lubbe',      'SUPERVISOR', 'password123!', 'tlubbe@drilling.co.nz');
+  await upsertUser('Greg Cossar',    'LEARNER',    'password123!', 'gcossar@drilling.co.nz');
 
   // ── Default test accounts (remove when no longer needed) ────
 
