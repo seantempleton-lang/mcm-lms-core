@@ -637,7 +637,10 @@ async function main() {
           'Know the load',
           'Use suitable gear',
           'Clear the area'
-        ]
+        ],
+        layout: 'two-column',
+        videoUrl: 'https://www.youtube.com/watch?v=GCSj0eGQ1wg',
+        imageCaption: 'Watch the lifting and handling demonstration, then compare what you see with the JSA checklist on the left.'
       },
       {
         id: 'site-conditions',
@@ -670,7 +673,13 @@ async function main() {
           'Do not rely on slides alone',
           'Quiz checks familiarity with the document'
         ],
-        fact: 'Controlled document review required'
+        fact: 'Controlled document review required',
+        links: [
+          {
+            label: 'Open the Manual Handling JSA PDF',
+            url: '/documents/jsa-manual-work-hand-auger-and-small-plant.pdf'
+          }
+        ]
       }
     ],
     quiz: [
@@ -839,6 +848,7 @@ async function main() {
         'Review the actual JSA before confirming familiarity through a multi-choice quiz.'
       ].join('\n'),
       estimatedMinutes: 18,
+      contentUrl: '/documents/jsa-manual-work-hand-auger-and-small-plant.pdf',
       contentBody: JSON.stringify(manualHandlingDeck)
     },
     create: {
@@ -853,6 +863,7 @@ async function main() {
         'Review the actual JSA before confirming familiarity through a multi-choice quiz.'
       ].join('\n'),
       estimatedMinutes: 18,
+      contentUrl: '/documents/jsa-manual-work-hand-auger-and-small-plant.pdf',
       contentBody: JSON.stringify(manualHandlingDeck)
     }
   });

@@ -6,6 +6,10 @@ export const assessmentsPostSchema = z.object({ assessments: z.array(z.object({ 
 export const sessionAwardsPostSchema = z.object({ awards: z.array(z.object({ userId:z.string().uuid(), competencyId:z.string().uuid(), notes:z.string().optional() })).min(1) });
 export const competencyCreateSchema = z.object({ code:z.string().min(3), title:z.string().min(3), category:z.string().min(2), description:z.string().optional(), expiryMonths:z.number().int().positive().optional() });
 export const competencyPatchSchema = competencyCreateSchema.partial();
+const documentUrlSchema = z.union([
+  z.string().url(),
+  z.string().startsWith('/documents/')
+]);
 export const moduleCreateSchema = z.object({
   title:z.string().min(3),
   mode:z.enum(['INDIVIDUAL','FACILITATED','HYBRID']).optional(),
@@ -13,7 +17,7 @@ export const moduleCreateSchema = z.object({
   description:z.string().optional(),
   learningObjectives:z.string().max(4000).optional(),
   estimatedMinutes:z.number().int().positive().max(1440).optional(),
-  contentUrl:z.string().url().optional(),
+  contentUrl:documentUrlSchema.optional(),
   contentBody:z.string().max(20000).optional()
 });
 export const modulePatchSchema = moduleCreateSchema.partial();

@@ -12,6 +12,7 @@ import { sessionsRouter } from './routes/sessions.js';
 import { adminRouter } from './routes/admin.js';
 import { matrixRouter } from './routes/matrix.js';
 import { trainingRouter } from './routes/training.js';
+import { documentsRouter } from './routes/documents.js';
 
 const app = express();
 app.use(helmet());
@@ -23,6 +24,7 @@ app.use(cors({
 }));
 
 app.get('/health', (req,res)=>res.json({ ok:true }));
+app.use('/documents', documentsRouter);
 
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
