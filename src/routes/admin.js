@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import path from 'path';
+import fs from 'fs/promises';
 import { prisma } from '../prisma.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { asyncHandler, HttpError, mapPrismaError } from '../utils/http.js';
@@ -6,9 +8,59 @@ import { userCreateSchema, userPatchSchema } from '../validators.js';
 import { hashPassword } from '../utils/password.js';
 
 export const adminRouter = Router();
+const documentsRoot = path.resolve(process.cwd(), 'storage', 'documents');
 
 // All admin routes require ADMIN role
 adminRouter.use(requireAuth, requireRole('ADMIN'));
+
+adminRouter.get('/resources', asyncHandler(async (req, res) => {
+  let items = [];
+
+  try {
+    const entries = await fs.readdir(documentsRoot, { withFileTypes: true });
+    items = await Promise.all(
+      entries
+        .filter((entry) => entry.isFile())
+        .map(async (entry) => {
+          const fullPath = path.join(documentsRoot, entry.name);
+          const stat = await fs.stat(fullPath);
+          return {
+            filename: entry.name,
+            url: `/documents/${entry.name}`,
+            sizeBytes: stat.size,
+            modifiedAt: stat.mtime.toISOString()
+          };
+        })
+    );
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw error;
+  }
+
+  items.sort((a, b) => new Date(b.modifiedAt) - new Date(a.modifiedAt));
+  res.json(items);
+}));
+
+adminRouter.delete('/resources/:filename', asyncHandler(async (req, res) => {
+  const requested = req.params.filename || '';
+  const safeName = path.basename(requested);
+
+  if (!safeName || safeName !== requested) {
+    throw new HttpError(400, 'Invalid resource name');
+  }
+
+  const filePath = path.join(documentsRoot, safeName);
+
+  try {
+    await fs.unlink(filePath);
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      throw new HttpError(404, 'Resource not found');
+    }
+    throw error;
+  }
+
+  res.status(204).send();
+}));
 
 // ── List / search users ─────────────────────────────────────────────────────
 // GET /admin/users?q=

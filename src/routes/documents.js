@@ -13,7 +13,7 @@ const allowedExtensions = new Set([
   '.mp4', '.webm', '.ogg'
 ]);
 
-function buildSafeFilename(originalName = 'document') {
+function sanitiseFilename(originalName = 'document') {
   const extension = path.extname(originalName).toLowerCase();
   const baseName = path.basename(originalName, extension);
   const safeBase = baseName
@@ -22,7 +22,29 @@ function buildSafeFilename(originalName = 'document') {
     .replace(/^-+|-+$/g, '')
     .slice(0, 80) || 'document';
 
-  return `${Date.now()}-${safeBase}${extension}`;
+  return `${safeBase}${extension}`;
+}
+
+async function buildAvailableFilename(originalName = 'document') {
+  const initialName = sanitiseFilename(originalName);
+  const extension = path.extname(initialName);
+  const baseName = path.basename(initialName, extension);
+
+  let candidate = initialName;
+  let counter = 1;
+
+  while (true) {
+    try {
+      await fs.access(path.join(documentsRoot, candidate));
+      candidate = `${baseName}-${counter}${extension}`;
+      counter += 1;
+    } catch (error) {
+      if (error?.code === 'ENOENT') {
+        return candidate;
+      }
+      throw error;
+    }
+  }
 }
 
 const upload = multer({
@@ -33,7 +55,9 @@ const upload = multer({
         .catch((error) => cb(error));
     },
     filename: (req, file, cb) => {
-      cb(null, buildSafeFilename(file.originalname));
+      buildAvailableFilename(file.originalname)
+        .then((filename) => cb(null, filename))
+        .catch((error) => cb(error));
     }
   }),
   limits: { fileSize: 25 * 1024 * 1024 },
