@@ -14,6 +14,302 @@ async function upsertUser(name, role, password, email = null) {
   });
 }
 
+function moduleUuid(number) {
+  return `00000000-0000-0000-0000-${number.toString().padStart(12, '0')}`;
+}
+
+function buildProcedureDeck({ title, role, packageName, documentNumber, documentType, focus, reviewPoints }) {
+  const label = documentNumber ? `${documentNumber} - ${title}` : title;
+  return {
+    title: label,
+    subtitle: `Self-directed review module from ${packageName}.`,
+    slides: [
+      {
+        id: 'hero',
+        type: 'hero',
+        eyebrow: role,
+        title,
+        body: `Use this module to prepare for the ${documentType.toLowerCase()} before practical signoff or supervisor review.`,
+        meta: [
+          `Source: ${packageName}`,
+          documentNumber ? `Document: ${documentNumber}` : `Package item: ${title}`,
+          `Format: self-directed document review plus quiz`
+        ],
+        fact: 'Read the source procedure before confirming competency'
+      },
+      {
+        id: 'purpose',
+        type: 'bullets',
+        eyebrow: 'Purpose',
+        title: 'What this module is checking',
+        bullets: [
+          `You can identify when ${title.toLowerCase()} applies in surface drilling work.`,
+          'You know the tools, equipment, people, and pre-start checks required by the source document.',
+          'You can explain the key safety controls before doing the task.',
+          'You know when to stop and ask a supervisor, trainer, or other competent person for help.'
+        ]
+      },
+      {
+        id: 'review',
+        type: 'checklist',
+        eyebrow: 'Document review',
+        title: 'Read the controlled document closely',
+        checklist: reviewPoints
+      },
+      {
+        id: 'field-practice',
+        type: 'bullets',
+        eyebrow: 'Field practice',
+        title: 'Turn the document into site behaviour',
+        bullets: [
+          'Confirm the task area is safe, tidy, and isolated from unrelated work.',
+          'Use the PPE and manual handling controls named in the procedure.',
+          'Follow the sequence in the procedure rather than relying on memory.',
+          'Keep communication clear with the driller, assistant, supervisor, and any nearby workers.',
+          'Record completion or escalate gaps using the normal training signoff process.'
+        ]
+      },
+      {
+        id: 'ready-check',
+        type: 'checklist',
+        eyebrow: 'Before signoff',
+        title: 'Learner readiness check',
+        checklist: [
+          'I have read the source document, not only this summary.',
+          'I can describe the task purpose, key hazards, and required controls.',
+          'I can identify the correct tools or equipment before starting.',
+          'I know what a competent result looks like.',
+          'I know which uncertainties must be escalated before work continues.'
+        ]
+      }
+    ],
+    quiz: [
+      {
+        id: 'q1',
+        question: `What is the main purpose of this module on ${title}?`,
+        options: [
+          'To confirm the learner has reviewed the source document and understands the task controls.',
+          'To replace supervisor assessment for all future work.',
+          'To remove the need for PPE if the learner passes the quiz.',
+          'To allow the learner to change the procedure without approval.'
+        ],
+        correctIndex: 0,
+        explanation: 'These modules support self-directed learning and document familiarity; practical competency still depends on the required workplace process.'
+      },
+      {
+        id: 'q2',
+        question: 'What should the learner do before attempting the task in the field?',
+        options: [
+          'Rely on memory if they have seen the task before.',
+          'Read the controlled document and confirm tools, PPE, hazards, and sequence.',
+          'Start the job and fill in the training record later.',
+          'Ask another trainee to sign the assessment.'
+        ],
+        correctIndex: 1,
+        explanation: 'The current LMS modules are designed around reading the source material first, then checking understanding.'
+      },
+      {
+        id: 'q3',
+        question: 'If the source document, site conditions, or equipment condition does not match what the learner expects, what is the safest response?',
+        options: [
+          'Continue if the task seems simple.',
+          'Stop and escalate to a supervisor, trainer, or competent person.',
+          'Skip the checklist to save time.',
+          'Use whichever tool is closest.'
+        ],
+        correctIndex: 1,
+        explanation: 'Unexpected conditions should be escalated before work continues.'
+      },
+      {
+        id: 'q4',
+        question: `Which item belongs in the review of ${documentNumber || title}?`,
+        options: [
+          focus,
+          'Personal preference for drill rig colour.',
+          'Only the completion date on the cover sheet.',
+          'The next unrelated module in the LMS.'
+        ],
+        correctIndex: 0,
+        explanation: 'The review should focus on the procedure content that affects safe and competent task performance.'
+      }
+    ]
+  };
+}
+
+function buildRefuellingDieselEnginesDeck() {
+  return {
+    title: 'GEN 1.1 - Refuelling Diesel Engines',
+    subtitle: 'Extracted self-directed module from SUR-UW-SWP.pdf, Surface Utility Worker Priority Training SWPs.',
+    slides: [
+      {
+        id: 'hero',
+        type: 'hero',
+        eyebrow: 'Surface Utility Worker',
+        title: 'Refuelling diesel engines safely',
+        body: 'This module is built from the GEN 1.1 Standard Work Procedure and focuses on the tools, safety controls, job steps, hazards, and controls required when refuelling diesel engines.',
+        meta: [
+          'Document title: Refuelling Diesel Engines',
+          'Document number: GEN1.1',
+          'Equipment: Diesel engines',
+          'Revision date: 21 May 2002'
+        ],
+        fact: 'Refuel at end of shift'
+      },
+      {
+        id: 'source-page-1',
+        type: 'bullets',
+        eyebrow: 'Extracted page 1 of 2',
+        title: 'Tools, people, safety procedures, and application',
+        bullets: [
+          'Tools and equipment: clean funnel, drum pump, bulk fuel nozzle, 200 L drum or bulk fuel source of diesel, and clean rags.',
+          'Personnel required: 1 person.',
+          'Application: all diesel engines.',
+          'Safety procedures: do not smoke, shut down the engine, and keep naked flames or ignition sources at least 10 m away.',
+          'Prepare the work area using GEN1.2 and GEN1.3 housekeeping expectations.',
+          'Use surface PPE, follow safe manual handling procedure GEN1.11, and confirm correct firefighting equipment is available.',
+          'Points to note: do not use twigs or pieces of wood to dip the tank, and do not use burlap to clean areas.'
+        ],
+        imageUrl: '/documents/sur-uw-gen-1-1-page-1.png',
+        imageCaption: 'Rendered source page: GEN1.1/1 of 2.'
+      },
+      {
+        id: 'job-steps',
+        type: 'checklist',
+        eyebrow: 'Extracted page 2 of 2',
+        title: 'Specific job steps from the SWP',
+        checklist: [
+          'Locate the fuel source near the engine using the 200 L drum and drum pump.',
+          'Shut down the engine before refuelling.',
+          'Clean around the fuel cap with a clean rag.',
+          'Remove the fuel cap.',
+          'Place the clean fuel nozzle or funnel in the tank.',
+          'Slowly fill the tank, avoiding overfilling and spillage.',
+          'Remove the nozzle or funnel.',
+          'Replace the fuel cap and wipe the area.'
+        ],
+        imageUrl: '/documents/sur-uw-gen-1-1-page-2.png',
+        imageCaption: 'Rendered source page: GEN1.1/2 of 2.'
+      },
+      {
+        id: 'hazards-controls',
+        type: 'bullets',
+        eyebrow: 'Hazards and controls',
+        title: 'What can go wrong and what controls the SWP gives',
+        bullets: [
+          'Back injuries can occur when locating or moving the fuel source; apply safe manual handling procedure GEN1.11.',
+          'Fire hazard exists when refuelling; shut down the engine and have correct firefighting equipment available.',
+          'Fuel contamination can occur around the fuel cap, nozzle, or funnel; wipe affected areas with a clean rag.',
+          'Overfilling or spillage increases fire and environmental risk; fill slowly and control the nozzle or funnel.',
+          'Unapproved dipping or cleaning materials can contaminate the tank or work area; do not use twigs, wood, or burlap.'
+        ],
+        fact: 'Clean fuel handling is part of safe fuel handling'
+      },
+      {
+        id: 'document-review',
+        type: 'checklist',
+        eyebrow: 'Controlled document',
+        title: 'Review the source before signoff',
+        checklist: [
+          'Open SUR-UW-SWP.pdf and review GEN 1.1 in full.',
+          'Check the tools and equipment list before starting the task.',
+          'Confirm the engine is shut down and ignition sources are controlled.',
+          'Confirm firefighting equipment, PPE, housekeeping, and manual handling controls are in place.',
+          'Use the extracted page images to compare the module summary against the source procedure.'
+        ],
+        links: [
+          {
+            label: 'Open SUR-UW-SWP.pdf',
+            url: '/documents/sur-uw-swp.pdf'
+          },
+          {
+            label: 'Open GEN1.1 page 1 image',
+            url: '/documents/sur-uw-gen-1-1-page-1.png'
+          },
+          {
+            label: 'Open GEN1.1 page 2 image',
+            url: '/documents/sur-uw-gen-1-1-page-2.png'
+          }
+        ],
+        fact: 'Controlled source review required'
+      }
+    ],
+    quiz: [
+      {
+        id: 'q1',
+        question: 'According to GEN 1.1, when should diesel engines be refuelled?',
+        options: [
+          'At the end of shift.',
+          'Only after the engine has run dry.',
+          'While the engine is running to save time.',
+          'Only when the supervisor is off site.'
+        ],
+        correctIndex: 0,
+        explanation: 'The SWP highlights "REFUEL AT END OF SHIFT".'
+      },
+      {
+        id: 'q2',
+        question: 'Which item is listed as required tools and equipment for refuelling?',
+        options: [
+          'Clean funnel.',
+          'Burlap rag.',
+          'Piece of wood for dipping the tank.',
+          'Angle grinder.'
+        ],
+        correctIndex: 0,
+        explanation: 'The tools and equipment list includes a clean funnel, drum pump, bulk fuel nozzle, diesel source, and clean rags.'
+      },
+      {
+        id: 'q3',
+        question: 'What must happen before refuelling starts?',
+        options: [
+          'The engine must be shut down.',
+          'The engine must be warmed up at high idle.',
+          'The fuel cap should be left dirty.',
+          'The funnel should be shared between fuels without cleaning.'
+        ],
+        correctIndex: 0,
+        explanation: 'The safety procedures and job steps both require the engine to be shut down.'
+      },
+      {
+        id: 'q4',
+        question: 'What ignition-source control is stated in the SWP?',
+        options: [
+          'Ensure no naked flames or ignition sources are within a 10 m radius.',
+          'Keep ignition sources within 1 m so they can be watched.',
+          'Smoking is allowed if the wind is light.',
+          'Only control ignition sources indoors.'
+        ],
+        correctIndex: 0,
+        explanation: 'The procedure states that no naked flames or ignition sources should be within a 10 m radius.'
+      },
+      {
+        id: 'q5',
+        question: 'What is the control for fuel contamination around the fuel cap or funnel?',
+        options: [
+          'Wipe with a clean rag.',
+          'Use burlap to absorb the fuel.',
+          'Use a twig to clear the opening.',
+          'Leave the cap off until the next shift.'
+        ],
+        correctIndex: 0,
+        explanation: 'The job step controls specify wiping with a clean rag.'
+      },
+      {
+        id: 'q6',
+        question: 'Which point to note is specifically prohibited by GEN 1.1?',
+        options: [
+          'Using twigs or pieces of wood to dip the tank.',
+          'Using a clean rag.',
+          'Using surface PPE.',
+          'Having firefighting equipment available.'
+        ],
+        correctIndex: 0,
+        explanation: 'The points to note say not to use twigs or pieces of wood to dip the tank.'
+      }
+    ]
+  };
+}
+
 async function main() {
 
   // ── Real users ──────────────────────────────────────────────
@@ -1251,6 +1547,220 @@ async function main() {
     }
   });
 
+  const swpReviewPoints = [
+    'Confirm the document title, document number, equipment, revision date, and application.',
+    'Identify the tools and equipment required before the task starts.',
+    'Identify the required personnel and when a driller, assistant, supervisor, or trainer is needed.',
+    'Review the safety procedures, PPE, housekeeping, isolation, and manual handling controls.',
+    'Read the points to note and the full task sequence before attempting practical signoff.'
+  ];
+
+  const trainingPackageReviewPoints = [
+    'Read the acknowledgement and confirm what the learner is signing to say they understand.',
+    'Complete the written assessment questions using the training package content.',
+    'Review the practical assessment expectations before attempting the task with a trainer.',
+    'Confirm the result form and reassessment process are understood.',
+    'Escalate any question, equipment gap, or site condition that is unclear before practical work starts.'
+  ];
+
+  const generatedTrainingModules = [
+    {
+      start: 101,
+      role: 'Surface Utility Worker',
+      packageName: 'SUR-UW-SWP.pdf',
+      competencyPrefix: 'SUR-UW-SWP',
+      category: 'SURFACE',
+      documentType: 'Standard Work Procedure',
+      reviewPoints: swpReviewPoints,
+      focus: 'Tools, personnel, safety procedures, application, points to note, and task sequence.',
+      items: [
+        ['GEN 1.1', 'Refuelling Diesel Engines'],
+        ['GEN 1.2', 'Housekeeping - Work Area'],
+        ['GEN 1.3', 'Housekeeping - Tools'],
+        ['GEN 1.4', 'Emptying Q Series Inner Tubes'],
+        ['GEN 1.5', 'Assembly of Q Series Inner Tubes'],
+        ['GEN 1.7', 'Changing Q Series Backend Parts'],
+        ['GEN 1.11', 'Manual Lifting'],
+        ['GEN 1.12', 'Stilson Use - Basic'],
+        ['GEN 1.38', 'Correct Core Presentation'],
+        ['SUR 2.4', 'Pulling and Running Q Series Rods'],
+        ['SUR 2.32', 'Emergency Procedures - Gas Intersection'],
+        ['VEH 4.1', 'Light Vehicle Daily Inspection']
+      ]
+    },
+    {
+      start: 201,
+      role: 'Surface Drillers Assistant',
+      packageName: 'SUR-DA-SWP.pdf',
+      competencyPrefix: 'SUR-DA-SWP',
+      category: 'SURFACE',
+      documentType: 'Standard Work Procedure',
+      reviewPoints: swpReviewPoints,
+      focus: 'Tools, personnel, safety procedures, application, points to note, and task sequence.',
+      items: [
+        ['GEN 1.6', 'Adjusting Length of Q Series Inner Tube'],
+        ['GEN 1.8', 'Assembly of Q Series Outer Barrel'],
+        ['GEN 1.10', 'Repair Hydraulic Hoses'],
+        ['GEN 1.13', 'Changing Overshot Lifting Dogs'],
+        ['GEN 1.15', 'Change Balls and Seats - Bean Pumps'],
+        ['GEN 1.16', 'Replace Plunger Packing - Bean Pumps'],
+        ['GEN 1.17', 'Pulling Q Series Inner Tube'],
+        ['GEN 1.19', 'Overhaul Relief Valve 420-435-535 Pumps'],
+        ['GEN 1.29', 'Jump Start 12 Volt System'],
+        ['GEN 1.30', 'Jump Start 24 Volt System'],
+        ['GEN 1.39', 'Repair Stilson'],
+        ['GEN 1.40', 'Cutting Wireline at Surface'],
+        ['GEN 1.41', 'Pumping Out Splits and Removing Core from Q3 Inner Tubes'],
+        ['GEN 1.42', 'Assembling Q3 Inner Tube'],
+        ['GEN 1.43', 'Mixing Mud'],
+        ['GEN 1.44', 'Using a Marsh Funnel'],
+        ['GEN 1.47', 'Grouting Complete Drill Hole'],
+        ['GEN 1.49', 'Travelling Between Sites in Remote Areas'],
+        ['SUR 2.1', 'Pre-Start Check List - Surface Rigs'],
+        ['SUR 2.8', 'Assembly of Universal Water Swivel'],
+        ['SUR 2.44', 'Tightening High Pressure Air, Water or Hydraulic Hoses'],
+        ['SUR 2.47', 'Adding Attachments to Drill Rods'],
+        ['SUR 2.48', 'Loading / Unloading Rod Sloop'],
+        ['VEH 4.2', 'Truck Daily Check'],
+        ['VEH 4.3', 'Removing Flat Tyres - Light Vehicles'],
+        ['VEH 4.4', 'Removing Flat Tyres - Trucks']
+      ]
+    },
+    {
+      start: 301,
+      role: 'Surface Drillers Assistant',
+      packageName: 'SUR-DA-TP.pdf',
+      competencyPrefix: 'SUR-DA-TP',
+      category: 'SURFACE',
+      documentType: 'Theory and Practical Training Package',
+      reviewPoints: trainingPackageReviewPoints,
+      focus: 'Acknowledgement, written assessment, practical assessment, trainer questions, and result form.',
+      items: [
+        ['TP 01/05', 'Basic Drilling Fluids'],
+        ['TP 01/06', 'Survey and Orientation'],
+        ['TP 01/07', 'Hot Work Training'],
+        ['TP 01/09', 'General Maintenance'],
+        ['TP 01/10', 'Grouting Drill Holes'],
+        ['TP 01/11', 'Pump Care and Maintenance'],
+        ['TP 01/12', 'Gas Awareness'],
+        ['TP 02/01', 'Diamond Core Drilling']
+      ]
+    },
+    {
+      start: 401,
+      role: 'Surface Driller',
+      packageName: 'SUR-DR-SWP.pdf',
+      competencyPrefix: 'SUR-DR-SWP',
+      category: 'SURFACE',
+      documentType: 'Standard Work Procedure',
+      reviewPoints: swpReviewPoints,
+      focus: 'Tools, personnel, safety procedures, application, points to note, and task sequence.',
+      items: [
+        ['GEN 1.14', 'Change Hydraulic Pressure Gauges'],
+        ['GEN 1.28', 'Charge 12 Volt Battery'],
+        ['GEN 1.31', 'Rod Vibrations - Bent Rod'],
+        ['GEN 1.32', 'Differential Stick'],
+        ['GEN 1.35', 'Rod Vibrations - Dry Hole'],
+        ['GEN 1.36', 'Vibration Noise from Head - Transmission'],
+        ['GEN 1.37', 'Rod Vibrations - Rig Off Line'],
+        ['GEN 1.45', 'Lost Circulation'],
+        ['GEN 1.46', 'Cementing Aquifer'],
+        ['SUR 2.7', 'Using Break Out Stilsons'],
+        ['SUR 2.9', 'Set Up of Surface Rig'],
+        ['SUR 2.10', 'Raising the Mast - General Points'],
+        ['SUR 2.11', 'Raising Mast 66 to 90'],
+        ['SUR 2.12', 'Raising Mast 45 to 68'],
+        ['SUR 2.13', 'Lowering the Mast 66 to 90'],
+        ['SUR 2.14', 'Lowering the Mast 45 to 68'],
+        ['SUR 2.18', 'Main Winch Operation - UDR1000'],
+        ['SUR 2.19', 'Wireline Winch Operations'],
+        ['SUR 2.20', 'Setting Rotation - Diamond Drilling'],
+        ['SUR 2.24', 'Change Winch Rope - UDR1000'],
+        ['SUR 2.25', 'Cutting Casing'],
+        ['SUR 2.27', 'Setting Hold Back / Pull Down / Micro Feed'],
+        ['SUR 2.34', 'Adding / Removing 6m Headrods with Clamshell'],
+        ['SUR 2.35', 'Running Rods / Casing - Start of Hole'],
+        ['SUR 2.37', 'Preventative Maintenance Procedure for High Pressure Air and Hydraulic Hose'],
+        ['SUR 2.43', 'Breakthrough Drilling']
+      ]
+    }
+  ];
+
+  const generatedModuleIds = [];
+  for (const group of generatedTrainingModules) {
+    for (const [index, [documentNumber, title]] of group.items.entries()) {
+      const id = moduleUuid(group.start + index);
+      const competencyCode = `${group.competencyPrefix}-${documentNumber.replace(/[^A-Z0-9]+/gi, '-').replace(/^-|-$/g, '').toUpperCase()}`;
+      const isExtractedRefuellingModule = id === moduleUuid(101);
+      const deck = isExtractedRefuellingModule ? buildRefuellingDieselEnginesDeck() : buildProcedureDeck({
+        title,
+        role: group.role,
+        packageName: group.packageName,
+        documentNumber,
+        documentType: group.documentType,
+        focus: group.focus,
+        reviewPoints: group.reviewPoints
+      });
+      const generatedCompetency = await prisma.competency.upsert({
+        where:  { code: competencyCode },
+        update: {
+          title: `${documentNumber} - ${title}`,
+          category: group.role,
+          description: `${group.role} self-directed competency for ${documentNumber} from ${group.packageName}.`
+        },
+        create: {
+          code: competencyCode,
+          title: `${documentNumber} - ${title}`,
+          category: group.role,
+          description: `${group.role} self-directed competency for ${documentNumber} from ${group.packageName}.`
+        }
+      });
+      const module = await prisma.module.upsert({
+        where: { id },
+        update: {
+          title: `${documentNumber} - ${title}`,
+          mode: 'INDIVIDUAL',
+          category: group.category,
+          description: isExtractedRefuellingModule
+            ? 'Extracted self-directed review for GEN 1.1 Refuelling Diesel Engines, including source procedure text, rendered page images, and quiz.'
+            : `${group.role} self-directed review for ${documentNumber} from ${group.packageName}.`,
+          learningObjectives: [
+            `Identify when ${documentNumber} applies and what safe completion looks like.`,
+            'Review the tools, equipment, people, PPE, and controls required by the source document.',
+            'Confirm understanding through a short quiz before supervisor or trainer signoff.'
+          ].join('\n'),
+          estimatedMinutes: isExtractedRefuellingModule ? 15 : group.documentType === 'Standard Work Procedure' ? 10 : 20,
+          contentUrl: isExtractedRefuellingModule ? '/documents/sur-uw-swp.pdf' : undefined,
+          contentBody: JSON.stringify(deck)
+        },
+        create: {
+          id,
+          title: `${documentNumber} - ${title}`,
+          mode: 'INDIVIDUAL',
+          category: group.category,
+          description: isExtractedRefuellingModule
+            ? 'Extracted self-directed review for GEN 1.1 Refuelling Diesel Engines, including source procedure text, rendered page images, and quiz.'
+            : `${group.role} self-directed review for ${documentNumber} from ${group.packageName}.`,
+          learningObjectives: [
+            `Identify when ${documentNumber} applies and what safe completion looks like.`,
+            'Review the tools, equipment, people, PPE, and controls required by the source document.',
+            'Confirm understanding through a short quiz before supervisor or trainer signoff.'
+          ].join('\n'),
+          estimatedMinutes: isExtractedRefuellingModule ? 15 : group.documentType === 'Standard Work Procedure' ? 10 : 20,
+          contentUrl: isExtractedRefuellingModule ? '/documents/sur-uw-swp.pdf' : undefined,
+          contentBody: JSON.stringify(deck)
+        }
+      });
+
+      generatedModuleIds.push(module.id);
+      await prisma.moduleCompetency.upsert({
+        where:  { moduleId_competencyId: { moduleId: module.id, competencyId: generatedCompetency.id } },
+        update: { evidenceType: 'QUIZ' },
+        create: { moduleId: module.id, competencyId: generatedCompetency.id, evidenceType: 'QUIZ' }
+      });
+    }
+  }
+
   // ── Competency mappings ───────────────────────────────────────
   for (const [competencyId, evidenceType] of [
     [dtFund.id,     'SESSION'],
@@ -1283,12 +1793,14 @@ async function main() {
   console.log('Module: Introduction to Geotechnical Drilling (INDIVIDUAL) -- learner foundation module with end-of-module quiz');
   console.log('Module: Safe Manual Handling Techniques (INDIVIDUAL) -- JSA-based learner module with document review prompt and quiz');
   console.log('Module: P399 Plant Risk Assessment Review (INDIVIDUAL) -- Plant category with end-of-module quiz');
+  console.log(`Modules: Surface priority training series (${generatedModuleIds.length} generated INDIVIDUAL modules from SUR-UW-SWP, SUR-DA-SWP, SUR-DA-TP, and SUR-DR-SWP)`);
   console.log('  HSE-MH-01   -> QUIZ');
   console.log('  GT-INTRO-01 -> QUIZ');
   console.log('  DT-FUND-01  -> SESSION');
   console.log('  DT-FLUID-01 -> QUIZ');
   console.log('  DT-HEAVE-01 -> SESSION');
   console.log('  DT-ART-01   -> QUIZ');
+  console.log('  Surface priority item competencies -> QUIZ');
 }
 
 main()
