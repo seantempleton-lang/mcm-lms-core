@@ -1,0 +1,135 @@
+{
+  "module": {
+    "key": "HSE-MAR-JSA-BARGE",
+    "title": "Marine (Floating Barge) Drilling - JSA Review",
+    "mode": "INDIVIDUAL",
+    "category": "HSE",
+    "description": "Operational competency module covering hazards, controls, environmental management, marine transfer procedures, and emergency response requirements for drilling operations undertaken from a floating barge.",
+    "learningObjectives": [
+      "Identify the key hazards associated with floating barge drilling operations.",
+      "Apply required controls for marine transfers, rig operation, lifting activities, and drilling tasks.",
+      "Demonstrate understanding of emergency response and environmental protection requirements.",
+      "Recognise stop-work conditions including unsafe weather, vessel movement, spills, and uncontrolled hazards.",
+      "Confirm operational readiness through successful completion of the competency quiz."
+    ],
+    "estimatedMinutes": 20,
+    "contentUrl": "/documents/jsa-marine-floating-barge-drilling.pdf",
+    "contentBody": {
+      "title": "Marine (Floating Barge) Drilling - JSA Review",
+      "subtitle": "Self-directed review module for floating barge drilling operations.",
+      "slides": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "eyebrow": "HSE",
+          "title": "Marine drilling requires controlled work",
+          "body": "Use this module to review the floating barge drilling JSA before confirming readiness for marine drilling operations.",
+          "meta": [
+            "Source: JSA - Marine (Floating Barge) Drilling.pdf",
+            "Format: self-directed JSA review plus quiz"
+          ],
+          "fact": "Stop work when marine conditions or controls are unsafe"
+        },
+        {
+          "id": "hazards",
+          "type": "bullets",
+          "eyebrow": "Hazards",
+          "title": "Key hazards to identify",
+          "bullets": [
+            "Floating barge movement, unstable access, unsafe transfer conditions, and changing weather can affect worker safety.",
+            "Drilling, rig operation, lifting activities, and marine transfers require planned controls before work starts.",
+            "Spills, uncontrolled hazards, or emergency conditions require immediate escalation."
+          ]
+        },
+        {
+          "id": "controls",
+          "type": "checklist",
+          "eyebrow": "Controls",
+          "title": "Operational controls to confirm",
+          "checklist": [
+            "Review the controlled JSA before starting work.",
+            "Confirm marine transfer requirements and safe access controls.",
+            "Confirm rig operation, lifting, and drilling controls are in place.",
+            "Confirm emergency response and environmental protection requirements.",
+            "Stop and escalate if weather, vessel movement, spills, or other uncontrolled hazards make the work unsafe."
+          ]
+        },
+        {
+          "id": "ready-check",
+          "type": "checklist",
+          "eyebrow": "Before signoff",
+          "title": "Learner readiness check",
+          "checklist": [
+            "I can identify the main hazards associated with floating barge drilling.",
+            "I can describe the required controls for marine transfers and drilling tasks.",
+            "I know the emergency response and environmental protection expectations.",
+            "I know when to stop work and escalate unsafe conditions."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "What is the main purpose of this module?",
+          "options": [
+            "To confirm understanding of hazards, controls, emergency response, and environmental requirements for floating barge drilling.",
+            "To replace the controlled JSA for all marine work.",
+            "To allow drilling to continue when weather or vessel movement is unsafe.",
+            "To remove the need for supervisor review."
+          ],
+          "correctIndex": 0,
+          "explanation": "The module supports JSA review and readiness confirmation; it does not replace controlled procedures or supervisor expectations."
+        },
+        {
+          "id": "q2",
+          "question": "Which condition should trigger stop-work and escalation?",
+          "options": [
+            "Unsafe weather, vessel movement, spills, or uncontrolled hazards.",
+            "A completed quiz with no source document review.",
+            "A routine task becoming familiar.",
+            "A request to save time."
+          ],
+          "correctIndex": 0,
+          "explanation": "The module objectives specifically call out unsafe weather, vessel movement, spills, and uncontrolled hazards as stop-work conditions."
+        },
+        {
+          "id": "q3",
+          "question": "What should be reviewed before confirming competency?",
+          "options": [
+            "The controlled floating barge drilling JSA and the required operational controls.",
+            "Only the module title.",
+            "Only previous experience on land-based drilling.",
+            "Only the completion date."
+          ],
+          "correctIndex": 0,
+          "explanation": "The learner must understand the source JSA and the controls for marine transfers, rig operation, lifting, drilling, emergency response, and environmental protection."
+        }
+      ]
+    }
+  },
+  "competencies": [
+    {
+      "code": "HSE-MAR-JSA-BARGE",
+      "title": "Marine (Floating Barge) Drilling - JSA Review",
+      "category": "HSE",
+      "description": "Understands hazards, controls, emergency response, environmental management, marine transfer procedures, and stop-work conditions for drilling operations undertaken from a floating barge."
+    }
+  ],
+  "mappings": [
+    {
+      "competencyCode": "HSE-MAR-JSA-BARGE",
+      "evidenceType": "QUIZ"
+    }
+  ],
+  "resources": [
+    {
+      "url": "/documents/jsa-marine-floating-barge-drilling.pdf",
+      "required": true
+    }
+  ],
+  "metadata": {
+    "sourceDocument": "JSA - Marine (Floating Barge) Drilling.pdf",
+    "moduleKey": "HSE-MAR-JSA-BARGE",
+    "builtBy": "ChatGPT"
+  }
+}

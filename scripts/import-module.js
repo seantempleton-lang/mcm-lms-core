@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import fs from 'fs/promises';
+import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import { importModulePackage } from '../src/modulePackages.js';
+
+dotenv.config();
 
 function printUsage() {
   console.error('Usage: node scripts/import-module.js <module-package.json> [--dry-run] [--skip-resource-check]');
