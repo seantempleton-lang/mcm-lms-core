@@ -40,7 +40,9 @@ Environment variables:
 - `CORS_ORIGIN` controls browser access and enables credentials when set.
 - `NODE_ENV` defaults to `development`.
 - `RUN_SEED=true` runs the seed script during container startup; otherwise startup only deploys migrations.
-- `DOCUMENTS_ROOT` controls where uploaded/served document resources are stored.
+- `DOCUMENT_STORAGE` selects `local` or `s3` document storage.
+- `DOCUMENTS_ROOT` controls local document storage when `DOCUMENT_STORAGE=local`.
+- `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_REGION`, `S3_FORCE_PATH_STYLE`, and `S3_PREFIX` configure Garage/S3 storage when `DOCUMENT_STORAGE=s3`.
 
 Docker:
 
@@ -56,7 +58,8 @@ Coolify assumptions from `README.md`:
 - UI origin: `http://lms-ui.mcm`
 - `JWT_SECRET` should be strong in deployed environments.
 - `DATABASE_URL` should point at the Coolify Postgres connection string.
-- `DOCUMENTS_ROOT` should point at a persistent mounted directory.
+- For Garage storage, set `DOCUMENT_STORAGE=s3` and provide the Garage S3 endpoint, bucket, access key, secret key, and path-style setting.
+- For local storage, set `DOCUMENT_STORAGE=local` and point `DOCUMENTS_ROOT` at a persistent mounted directory.
 - `RUN_SEED` should only be enabled when intentionally seeding or reseeding.
 
 ## Auth and Roles
@@ -131,7 +134,7 @@ The command requires `DATABASE_URL` to be set.
 Public/unprotected:
 
 - `GET /health`
-- `GET /documents/:filename` serves files from `DOCUMENTS_ROOT` after basename validation.
+- `GET /documents/:filename` serves files from the configured document backend after basename validation.
 
 Auth:
 
@@ -261,9 +264,22 @@ New module content should preferably be authored as package JSON files and impor
 
 ## Document Storage
 
-Document resources live under:
+Document resources are accessed through `src/utils/storage.js`.
 
-- `DOCUMENTS_ROOT`, defaulting to `storage/documents`
+Supported backends:
+
+- `DOCUMENT_STORAGE=local`: files live under `DOCUMENTS_ROOT`, defaulting to `storage/documents`.
+- `DOCUMENT_STORAGE=s3`: files live in an S3-compatible bucket, intended for Garage in Coolify.
+
+Garage/S3 environment:
+
+- `S3_ENDPOINT`: Garage S3 API endpoint.
+- `S3_BUCKET`: bucket name.
+- `S3_ACCESS_KEY_ID`: Garage access key.
+- `S3_SECRET_ACCESS_KEY`: Garage secret key.
+- `S3_REGION`: defaults to `garage`.
+- `S3_FORCE_PATH_STYLE`: defaults to `true`.
+- `S3_PREFIX`: optional object key prefix, default example is `documents`.
 
 Current checked-in resources include:
 
@@ -280,6 +296,7 @@ Filename handling:
 
 - Downloads reject path traversal by comparing the requested name to `path.basename`.
 - Uploads sanitize filenames to lowercase dash-separated names and avoid collisions with numeric suffixes.
+- Uploads, downloads, admin listing, admin deletion, and module package resource checks all use the same storage adapter.
 
 ## Frontend Contract Notes
 
@@ -312,6 +329,7 @@ Key frontend expectations:
 - Password generation, hashing, and verification helpers.
 - Module `contentBody` validation for structured JSON, legacy JSON strings, and invalid strings.
 - Module package validation, dry-run import behavior, and mocked transactional import behavior.
+- Document filename validation.
 
 The test suite is intentionally small and fast; route-level coverage still needs either an isolated test database or a mocked Prisma boundary.
 
@@ -320,7 +338,7 @@ The test suite is intentionally small and fast; route-level coverage still needs
 - Automated test coverage is still small and does not yet exercise routes or database workflows.
 - Seed data contains real named users and a shared initial password. Container startup now skips seeding unless `RUN_SEED=true`, but intentional production seeding still needs care.
 - The seed file is large and content-heavy; future edits should avoid accidental broad rewrites.
-- Document upload storage is filesystem-based. `DOCUMENTS_ROOT` is configurable, but deployment persistence still depends on mounting that path to persistent storage.
+- Document upload storage supports local filesystem and Garage/S3, but production still depends on the correct Coolify storage credentials and bucket configuration.
 - CORS is effectively disabled unless `CORS_ORIGIN` is set.
 - Development JWT fallback now logs a startup warning when used; production still requires `JWT_SECRET`.
 
@@ -333,6 +351,7 @@ Completed easy wins:
 - Make container startup seeding opt-in with `RUN_SEED=true`.
 - Keep local Docker Compose convenient by enabling `RUN_SEED=true` there.
 - Make document storage configurable with `DOCUMENTS_ROOT`.
+- Add Garage/S3-compatible document storage for uploads, downloads, listing, deletion, and module resource validation.
 - Mount `./storage/documents` into the local Compose API container.
 - Log a development warning when the JWT fallback secret is being used.
 - Document the new deployment flags in `README.md`, `.env.example`, and this file.

@@ -21,6 +21,7 @@ services:
       CORS_ORIGIN: http://localhost:5173
       NODE_ENV: development
       RUN_SEED: "true"
+      DOCUMENT_STORAGE: local
       DOCUMENTS_ROOT: /app/storage/documents
     ports:
       - "3000:3000"

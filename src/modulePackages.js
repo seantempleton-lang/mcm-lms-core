@@ -1,7 +1,6 @@
 import path from 'path';
-import fs from 'fs/promises';
 import { z } from 'zod';
-import { documentsRoot } from './utils/storage.js';
+import { documentStorage } from './utils/storage.js';
 
 const moduleKeySchema = z.string()
   .trim()
@@ -119,8 +118,7 @@ function buildResourceChecks(pkg) {
     const filename = filenameFromDocumentUrl(url);
     return {
       url,
-      filename,
-      path: path.join(documentsRoot, filename),
+      filename
     };
   });
 }
@@ -128,13 +126,8 @@ function buildResourceChecks(pkg) {
 async function findMissingResources(pkg) {
   const checks = buildResourceChecks(pkg);
   const results = await Promise.all(checks.map(async (resource) => {
-    try {
-      await fs.access(resource.path);
-      return null;
-    } catch (error) {
-      if (error?.code === 'ENOENT') return resource;
-      throw error;
-    }
+    const exists = await documentStorage.exists(resource.filename);
+    return exists ? null : resource;
   }));
 
   return results.filter(Boolean);

@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs/promises';
 import { requireAuth, requireRole } from '../middleware/auth.js';
-import { documentsRoot } from '../utils/storage.js';
+import { documentStorage, validateFilename } from '../utils/storage.js';
 
 export const documentsRouter = Router();
 
@@ -33,33 +32,16 @@ async function buildAvailableFilename(originalName = 'document') {
   let candidate = initialName;
   let counter = 1;
 
-  while (true) {
-    try {
-      await fs.access(path.join(documentsRoot, candidate));
-      candidate = `${baseName}-${counter}${extension}`;
-      counter += 1;
-    } catch (error) {
-      if (error?.code === 'ENOENT') {
-        return candidate;
-      }
-      throw error;
-    }
+  while (await documentStorage.exists(candidate)) {
+    candidate = `${baseName}-${counter}${extension}`;
+    counter += 1;
   }
+
+  return candidate;
 }
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      fs.mkdir(documentsRoot, { recursive: true })
-        .then(() => cb(null, documentsRoot))
-        .catch((error) => cb(error));
-    },
-    filename: (req, file, cb) => {
-      buildAvailableFilename(file.originalname)
-        .then((filename) => cb(null, filename))
-        .catch((error) => cb(error));
-    }
-  }),
+  storage: multer.memoryStorage(),
   limits: { fileSize: 25 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const extension = path.extname(file.originalname || '').toLowerCase();
@@ -70,8 +52,8 @@ const upload = multer({
   }
 });
 
-documentsRouter.post('/upload', requireAuth, requireRole('ADMIN'), (req, res, next) => {
-  upload.single('resource')(req, res, (error) => {
+documentsRouter.post('/upload', requireAuth, requireRole('ADMIN'), (req, res) => {
+  upload.single('resource')(req, res, async (error) => {
     if (error) {
       if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({ error: 'File is too large. Maximum size is 25 MB.' });
@@ -83,28 +65,42 @@ documentsRouter.post('/upload', requireAuth, requireRole('ADMIN'), (req, res, ne
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    return res.status(201).json({
-      filename: req.file.filename,
-      originalName: req.file.originalname,
-      url: `/documents/${req.file.filename}`
-    });
+    try {
+      const filename = await buildAvailableFilename(req.file.originalname);
+      await documentStorage.put({ filename, body: req.file.buffer });
+
+      return res.status(201).json({
+        filename,
+        originalName: req.file.originalname,
+        url: `/documents/${filename}`,
+        storage: documentStorage.type
+      });
+    } catch (uploadError) {
+      console.error(uploadError);
+      return res.status(uploadError.status || 500).json({ error: uploadError.message || 'Upload failed' });
+    }
   });
 });
 
 documentsRouter.get('/:filename', async (req, res, next) => {
   try {
-    const requested = req.params.filename || '';
-    const safeName = path.basename(requested);
+    const filename = validateFilename(req.params.filename || '');
+    const object = await documentStorage.getStream(filename);
 
-    if (!safeName || safeName !== requested) {
-      return res.status(400).json({ error: 'Invalid document name' });
+    res.setHeader('Content-Type', object.contentType);
+    if (object.contentLength !== undefined) {
+      res.setHeader('Content-Length', String(object.contentLength));
+    }
+    if (object.modifiedAt) {
+      res.setHeader('Last-Modified', new Date(object.modifiedAt).toUTCString());
     }
 
-    const filePath = path.join(documentsRoot, safeName);
-    await fs.access(filePath);
-    return res.sendFile(filePath);
+    return object.stream.pipe(res);
   } catch (error) {
-    if (error?.code === 'ENOENT') {
+    if (error?.status === 400) {
+      return res.status(400).json({ error: 'Invalid document name' });
+    }
+    if (error?.status === 404) {
       return res.status(404).json({ error: 'Document not found' });
     }
     return next(error);

@@ -11,7 +11,8 @@ Use these application settings in Coolify:
 - `CORS_ORIGIN=http://lms-ui.mcm`
 - Set a strong `JWT_SECRET`
 - Set `DATABASE_URL` to your Coolify Postgres connection string
-- Set `DOCUMENTS_ROOT` to a persistent mounted directory if admins will upload resources
+- For local app storage, set `DOCUMENT_STORAGE=local` and `DOCUMENTS_ROOT` to a persistent mounted directory
+- For Garage/S3 storage, set `DOCUMENT_STORAGE=s3`, `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, and usually `S3_FORCE_PATH_STYLE=true`
 - Set `RUN_SEED=true` only when intentionally seeding the environment
 
 This API is configured to accept browser requests from `http://lms-ui.mcm`.

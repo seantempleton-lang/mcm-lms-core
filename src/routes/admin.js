@@ -1,13 +1,11 @@
 import { Router } from 'express';
-import path from 'path';
-import fs from 'fs/promises';
 import { prisma } from '../prisma.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { asyncHandler, HttpError, mapPrismaError } from '../utils/http.js';
 import { userCreateSchema, userPatchSchema } from '../validators.js';
 import { generateRandomPassword, hashPassword } from '../utils/password.js';
 import { generateUniqueUsername } from '../utils/usernames.js';
-import { documentsRoot } from '../utils/storage.js';
+import { documentStorage, validateFilename } from '../utils/storage.js';
 import { importModulePackage } from '../modulePackages.js';
 
 export const adminRouter = Router();
@@ -16,46 +14,21 @@ export const adminRouter = Router();
 adminRouter.use(requireAuth, requireRole('ADMIN'));
 
 adminRouter.get('/resources', asyncHandler(async (req, res) => {
-  let items = [];
-
-  try {
-    const entries = await fs.readdir(documentsRoot, { withFileTypes: true });
-    items = await Promise.all(
-      entries
-        .filter((entry) => entry.isFile())
-        .map(async (entry) => {
-          const fullPath = path.join(documentsRoot, entry.name);
-          const stat = await fs.stat(fullPath);
-          return {
-            filename: entry.name,
-            url: `/documents/${entry.name}`,
-            sizeBytes: stat.size,
-            modifiedAt: stat.mtime.toISOString()
-          };
-        })
-    );
-  } catch (error) {
-    if (error?.code !== 'ENOENT') throw error;
-  }
-
-  items.sort((a, b) => new Date(b.modifiedAt) - new Date(a.modifiedAt));
-  res.json(items);
+  res.json(await documentStorage.list());
 }));
 
 adminRouter.delete('/resources/:filename', asyncHandler(async (req, res) => {
   const requested = req.params.filename || '';
-  const safeName = path.basename(requested);
-
-  if (!safeName || safeName !== requested) {
+  try {
+    validateFilename(requested);
+  } catch {
     throw new HttpError(400, 'Invalid resource name');
   }
 
-  const filePath = path.join(documentsRoot, safeName);
-
   try {
-    await fs.unlink(filePath);
+    await documentStorage.delete(requested);
   } catch (error) {
-    if (error?.code === 'ENOENT') {
+    if (error?.status === 404) {
       throw new HttpError(404, 'Resource not found');
     }
     throw error;
