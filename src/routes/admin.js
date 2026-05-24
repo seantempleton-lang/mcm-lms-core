@@ -8,6 +8,7 @@ import { userCreateSchema, userPatchSchema } from '../validators.js';
 import { generateRandomPassword, hashPassword } from '../utils/password.js';
 import { generateUniqueUsername } from '../utils/usernames.js';
 import { documentsRoot } from '../utils/storage.js';
+import { importModulePackage } from '../modulePackages.js';
 
 export const adminRouter = Router();
 
@@ -61,6 +62,28 @@ adminRouter.delete('/resources/:filename', asyncHandler(async (req, res) => {
   }
 
   res.status(204).send();
+}));
+
+adminRouter.post('/modules/import', asyncHandler(async (req, res) => {
+  const dryRun = req.query.dryRun === 'true';
+  const checkResources = req.query.checkResources !== 'false';
+
+  try {
+    const result = await importModulePackage({
+      prisma,
+      input: req.body,
+      dryRun,
+      checkResources,
+    });
+
+    if (!result.ok) {
+      return res.status(400).json(result);
+    }
+
+    res.status(dryRun ? 200 : 201).json(result);
+  } catch (error) {
+    throw mapPrismaError(error, 'Failed to import module package');
+  }
 }));
 
 // ── List / search users ─────────────────────────────────────────────────────

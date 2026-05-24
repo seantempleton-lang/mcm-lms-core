@@ -29,6 +29,8 @@ Important scripts from `package.json`:
 - `npm run prisma:generate` generates Prisma client.
 - `npm run prisma:migrate` deploys migrations.
 - `npm run prisma:seed` seeds users, competencies, modules, and training content.
+- `npm run module:import -- <file> --dry-run` validates a complete module package from disk.
+- `npm run module:import -- <file>` imports a complete module package into Postgres.
 
 Environment variables:
 
@@ -79,7 +81,7 @@ Primary Prisma models:
 
 - `User`: username-based login, optional email, role, password hash.
 - `Competency`: code/title/category/description with optional expiry.
-- `Module`: training module metadata and optional self-paced content.
+- `Module`: training module metadata, optional stable `moduleKey`, and optional self-paced content.
 - `ModuleCompetency`: maps modules to competencies and an evidence type.
 - `TrainingSession`: facilitated session for a module, owned by a facilitator.
 - `SessionAttendance`: attendance per session/user.
@@ -111,6 +113,7 @@ Migrations live under `prisma/migrations`.
 
 Notable recent migration:
 
+- `20260525100000_module_key` adds nullable unique `Module.moduleKey` for idempotent module imports.
 - `20260525090000_module_content_body_json` changes `Module.contentBody` from text to JSONB.
 - Existing `contentBody` values are converted with a defensive parser:
   - Valid stringified JSON becomes structured JSON.
@@ -143,6 +146,8 @@ Admin:
 
 - `GET /admin/resources`
 - `DELETE /admin/resources/:filename`
+- `POST /admin/modules/import?dryRun=true`
+- `POST /admin/modules/import`
 - `GET /admin/users?q=...`
 - `POST /admin/users`
 - `PATCH /admin/users/:id`
@@ -171,10 +176,20 @@ Modules:
 
 Module content contract:
 
+- Imported module packages upsert modules by `module.key`, stored as `Module.moduleKey`.
 - `Module.contentBody` is stored as structured JSON in Postgres/Prisma.
 - Module create/update requests should send `contentBody` as a JSON object or array.
 - For compatibility, the validator still accepts a JSON string and parses it before saving.
 - Non-JSON strings are rejected.
+
+Complete module package import:
+
+- Module-building agents should write package files under `content/modules`.
+- Package format and authoring guidance live in `MODULE_BUILD_CONTEXT.md`.
+- The shared importer is `src/modulePackages.js`.
+- The CLI entry point is `scripts/import-module.js`.
+- The admin API entry point is `POST /admin/modules/import`.
+- The importer validates, checks required resources, upserts competencies, upserts the module, and replaces module-competency mappings in one transaction.
 
 Sessions:
 
@@ -242,6 +257,8 @@ Assessment summary fields are stored on `TrainingAssignment`:
 
 Seeded module content is not just placeholder data; it carries much of the current LMS training structure and should be treated as active product content.
 
+New module content should preferably be authored as package JSON files and imported through the module package importer instead of adding more content directly to `prisma/seed.js`.
+
 ## Document Storage
 
 Document resources live under:
@@ -294,6 +311,7 @@ Key frontend expectations:
 - Username generation and uniqueness helper behavior.
 - Password generation, hashing, and verification helpers.
 - Module `contentBody` validation for structured JSON, legacy JSON strings, and invalid strings.
+- Module package validation, dry-run import behavior, and mocked transactional import behavior.
 
 The test suite is intentionally small and fast; route-level coverage still needs either an isolated test database or a mocked Prisma boundary.
 
@@ -319,11 +337,12 @@ Completed easy wins:
 - Log a development warning when the JWT fallback secret is being used.
 - Document the new deployment flags in `README.md`, `.env.example`, and this file.
 - Convert `Module.contentBody` from stringified JSON to a Prisma `Json` field, with migration support for existing values and validator compatibility for legacy JSON-string requests.
+- Add the agent-friendly module package import architecture, including `Module.moduleKey`, shared validation/import service, CLI importer, admin import endpoint, package tests, and `MODULE_BUILD_CONTEXT.md`.
 
 Recommended next pieces:
 
 - Add route-level tests with an isolated test database or mocked Prisma client.
-- Split the large seed file into smaller content builders before making more content changes.
+- Gradually move large seeded module content into reviewed package files under `content/modules`.
 - Decide whether production should ever run seed data, and if so create a separate production-safe seed path with generated initial credentials.
 - Decide the production storage mount path for Coolify and ensure it is backed by persistent storage.
 - Decide whether the API should allow a default local CORS origin in development or continue requiring explicit `CORS_ORIGIN`.

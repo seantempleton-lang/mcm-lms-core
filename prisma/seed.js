@@ -1072,6 +1072,7 @@ async function main() {
   const mod = await prisma.module.upsert({
     where:  { id: '00000000-0000-0000-0000-000000000001' },
     update: {
+      moduleKey: 'DRILLING-FUNDAMENTALS',
       title: 'Drilling Fundamentals',
       mode: 'HYBRID',
       category: 'GEOTECH',
@@ -1087,6 +1088,7 @@ async function main() {
     },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
+      moduleKey: 'DRILLING-FUNDAMENTALS',
       title: 'Drilling Fundamentals',
       mode: 'HYBRID',
       category: 'GEOTECH',
@@ -1105,6 +1107,7 @@ async function main() {
   const geotechIntroModule = await prisma.module.upsert({
     where:  { id: '00000000-0000-0000-0000-000000000003' },
     update: {
+      moduleKey: 'GT-INTRO-01',
       title: 'Introduction to Geotechnical Drilling',
       mode: 'INDIVIDUAL',
       category: 'GEOTECH',
@@ -1119,6 +1122,7 @@ async function main() {
     },
     create: {
       id: '00000000-0000-0000-0000-000000000003',
+      moduleKey: 'GT-INTRO-01',
       title: 'Introduction to Geotechnical Drilling',
       mode: 'INDIVIDUAL',
       category: 'GEOTECH',
@@ -1136,6 +1140,7 @@ async function main() {
   const manualHandlingModule = await prisma.module.upsert({
     where:  { id: '00000000-0000-0000-0000-000000000004' },
     update: {
+      moduleKey: 'HSE-MH-01',
       title: 'Safe Manual Handling Techniques',
       mode: 'INDIVIDUAL',
       category: 'HSE',
@@ -1151,6 +1156,7 @@ async function main() {
     },
     create: {
       id: '00000000-0000-0000-0000-000000000004',
+      moduleKey: 'HSE-MH-01',
       title: 'Safe Manual Handling Techniques',
       mode: 'INDIVIDUAL',
       category: 'HSE',
@@ -1169,6 +1175,7 @@ async function main() {
   await prisma.module.upsert({
     where: { id: '00000000-0000-0000-0000-000000000002' },
     update: {
+      moduleKey: 'P399-PRA-REVIEW',
       title: 'P399 Plant Risk Assessment Review',
       mode: 'INDIVIDUAL',
       category: 'PLANT',
@@ -1358,6 +1365,7 @@ async function main() {
     },
     create: {
       id: '00000000-0000-0000-0000-000000000002',
+      moduleKey: 'P399-PRA-REVIEW',
       title: 'P399 Plant Risk Assessment Review',
       mode: 'INDIVIDUAL',
       category: 'PLANT',
@@ -1704,6 +1712,7 @@ async function main() {
       const generatedCompetency = await prisma.competency.upsert({
         where:  { code: competencyCode },
         update: {
+          moduleKey: competencyCode,
           title: `${documentNumber} - ${title}`,
           category: group.role,
           description: `${group.role} self-directed competency for ${documentNumber} from ${group.packageName}.`
@@ -1735,6 +1744,7 @@ async function main() {
         },
         create: {
           id,
+          moduleKey: competencyCode,
           title: `${documentNumber} - ${title}`,
           mode: 'INDIVIDUAL',
           category: group.category,

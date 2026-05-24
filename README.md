@@ -21,3 +21,10 @@ This API is configured to accept browser requests from `http://lms-ui.mcm`.
 ### User lookup
 - `GET /users?q=...` (SUPERVISOR/ADMIN)
 Returns up to 50 users (`id`, `name`, `email`, `role`) for adding attendees to sessions.
+
+### Module package import
+- `POST /admin/modules/import?dryRun=true` validates a complete module package without writing to the database.
+- `POST /admin/modules/import` imports a complete module package as an ADMIN.
+- `npm run module:import -- content/modules/example.module.json --dry-run` validates a package from disk.
+
+See `MODULE_BUILD_CONTEXT.md` for the module package format used by module-building agents.

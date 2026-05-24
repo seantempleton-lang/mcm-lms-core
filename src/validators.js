@@ -12,6 +12,7 @@ const documentUrlSchema = z.union([
   z.string().url(),
   z.string().startsWith('/documents/')
 ]);
+const moduleKeySchema = z.string().trim().min(3).max(120).regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/, 'Module key must start with a letter or number and use only letters, numbers, dots, underscores, or hyphens');
 const jsonContentBodySchema = z.union([
   z.record(z.unknown()),
   z.array(z.unknown()),
@@ -33,6 +34,7 @@ const jsonContentBodySchema = z.union([
   })
 ]);
 export const moduleCreateSchema = z.object({
+  moduleKey:moduleKeySchema.optional(),
   title:z.string().min(3),
   mode:z.enum(['INDIVIDUAL','FACILITATED','HYBRID']).optional(),
   category:z.string().min(2).optional(),
