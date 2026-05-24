@@ -7,9 +7,9 @@ import { asyncHandler, HttpError, mapPrismaError } from '../utils/http.js';
 import { userCreateSchema, userPatchSchema } from '../validators.js';
 import { generateRandomPassword, hashPassword } from '../utils/password.js';
 import { generateUniqueUsername } from '../utils/usernames.js';
+import { documentsRoot } from '../utils/storage.js';
 
 export const adminRouter = Router();
-const documentsRoot = path.resolve(process.cwd(), 'storage', 'documents');
 
 // All admin routes require ADMIN role
 adminRouter.use(requireAuth, requireRole('ADMIN'));

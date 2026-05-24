@@ -1083,7 +1083,7 @@ async function main() {
         'Review understanding with an end-of-module quiz.'
       ].join('\n'),
       estimatedMinutes: 30,
-      contentBody: JSON.stringify(drillingFundamentalsDeck)
+      contentBody: drillingFundamentalsDeck
     },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
@@ -1098,7 +1098,7 @@ async function main() {
         'Review understanding with an end-of-module quiz.'
       ].join('\n'),
       estimatedMinutes: 30,
-      contentBody: JSON.stringify(drillingFundamentalsDeck)
+      contentBody: drillingFundamentalsDeck
     }
   });
 
@@ -1115,7 +1115,7 @@ async function main() {
         'Recognise the field behaviours that support safe work, reliable samples, and accurate records.'
       ].join('\n'),
       estimatedMinutes: 26,
-      contentBody: JSON.stringify(geotechIntroDeck)
+      contentBody: geotechIntroDeck
     },
     create: {
       id: '00000000-0000-0000-0000-000000000003',
@@ -1129,7 +1129,7 @@ async function main() {
         'Recognise the field behaviours that support safe work, reliable samples, and accurate records.'
       ].join('\n'),
       estimatedMinutes: 26,
-      contentBody: JSON.stringify(geotechIntroDeck)
+      contentBody: geotechIntroDeck
     }
   });
 
@@ -1147,7 +1147,7 @@ async function main() {
       ].join('\n'),
       estimatedMinutes: 18,
       contentUrl: '/documents/jsa-manual-work-hand-auger-and-small-plant.pdf',
-      contentBody: JSON.stringify(manualHandlingDeck)
+      contentBody: manualHandlingDeck
     },
     create: {
       id: '00000000-0000-0000-0000-000000000004',
@@ -1162,7 +1162,7 @@ async function main() {
       ].join('\n'),
       estimatedMinutes: 18,
       contentUrl: '/documents/jsa-manual-work-hand-auger-and-small-plant.pdf',
-      contentBody: JSON.stringify(manualHandlingDeck)
+      contentBody: manualHandlingDeck
     }
   });
 
@@ -1180,7 +1180,7 @@ async function main() {
         'Review understanding with an end-of-module quiz based on the real risk assessment.'
       ].join('\n'),
       estimatedMinutes: 25,
-      contentBody: JSON.stringify({
+      contentBody: {
         title: 'P399 Plant Risk Assessment Review',
         subtitle: 'Review the live plant risk assessment for the P399 Geoprobe 8150LS Sonic Drilling Rig before starting work.',
         slides: [
@@ -1354,7 +1354,7 @@ async function main() {
             explanation: 'The fire section of the PRA specifically notes the risk of fluid contacting hot parts.'
           }
         ]
-      })
+      }
     },
     create: {
       id: '00000000-0000-0000-0000-000000000002',
@@ -1369,7 +1369,7 @@ async function main() {
         'Review understanding with an end-of-module quiz based on the real risk assessment.'
       ].join('\n'),
       estimatedMinutes: 25,
-      contentBody: JSON.stringify({
+      contentBody: {
         title: 'P399 Plant Risk Assessment Review',
         subtitle: 'Review the live plant risk assessment for the P399 Geoprobe 8150LS Sonic Drilling Rig before starting work.',
         slides: [
@@ -1543,7 +1543,7 @@ async function main() {
             explanation: 'The fire section of the PRA specifically notes the risk of fluid contacting hot parts.'
           }
         ]
-      })
+      }
     }
   });
 
@@ -1731,7 +1731,7 @@ async function main() {
           ].join('\n'),
           estimatedMinutes: isExtractedRefuellingModule ? 15 : group.documentType === 'Standard Work Procedure' ? 10 : 20,
           contentUrl: isExtractedRefuellingModule ? '/documents/sur-uw-swp.pdf' : undefined,
-          contentBody: JSON.stringify(deck)
+          contentBody: deck
         },
         create: {
           id,
@@ -1748,7 +1748,7 @@ async function main() {
           ].join('\n'),
           estimatedMinutes: isExtractedRefuellingModule ? 15 : group.documentType === 'Standard Work Procedure' ? 10 : 20,
           contentUrl: isExtractedRefuellingModule ? '/documents/sur-uw-swp.pdf' : undefined,
-          contentBody: JSON.stringify(deck)
+          contentBody: deck
         }
       });
 

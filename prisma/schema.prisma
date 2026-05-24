@@ -79,7 +79,7 @@ model Module {
   learningObjectives String?
   estimatedMinutes Int?
   contentUrl   String?
-  contentBody  String?
+  contentBody  Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   competencies ModuleCompetency[]

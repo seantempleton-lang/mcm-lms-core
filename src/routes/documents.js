@@ -3,10 +3,10 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs/promises';
 import { requireAuth, requireRole } from '../middleware/auth.js';
+import { documentsRoot } from '../utils/storage.js';
 
 export const documentsRouter = Router();
 
-const documentsRoot = path.resolve(process.cwd(), 'storage', 'documents');
 const allowedExtensions = new Set([
   '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt',
   '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg',

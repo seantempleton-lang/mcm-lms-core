@@ -12,6 +12,26 @@ const documentUrlSchema = z.union([
   z.string().url(),
   z.string().startsWith('/documents/')
 ]);
+const jsonContentBodySchema = z.union([
+  z.record(z.unknown()),
+  z.array(z.unknown()),
+  z.string().transform((value, ctx) => {
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed && typeof parsed === 'object') {
+        return parsed;
+      }
+    } catch {
+      // Report a validation issue below.
+    }
+
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'contentBody must be a JSON object, array, or a string containing JSON object/array data',
+    });
+    return z.NEVER;
+  })
+]);
 export const moduleCreateSchema = z.object({
   title:z.string().min(3),
   mode:z.enum(['INDIVIDUAL','FACILITATED','HYBRID']).optional(),
@@ -20,7 +40,7 @@ export const moduleCreateSchema = z.object({
   learningObjectives:z.string().max(4000).optional(),
   estimatedMinutes:z.number().int().positive().max(1440).optional(),
   contentUrl:documentUrlSchema.optional(),
-  contentBody:z.string().max(20000).optional()
+  contentBody:jsonContentBodySchema.optional()
 });
 export const modulePatchSchema = moduleCreateSchema.partial();
 export const moduleCompetenciesPutSchema = z.object({ items: z.array(z.object({ competencyId:z.string().uuid(), evidenceType:z.enum(['COMPLETION','QUIZ','SESSION','SIGNOFF']) })) });

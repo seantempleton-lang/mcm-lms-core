@@ -11,6 +11,8 @@ Use these application settings in Coolify:
 - `CORS_ORIGIN=http://lms-ui.mcm`
 - Set a strong `JWT_SECRET`
 - Set `DATABASE_URL` to your Coolify Postgres connection string
+- Set `DOCUMENTS_ROOT` to a persistent mounted directory if admins will upload resources
+- Set `RUN_SEED=true` only when intentionally seeding the environment
 
 This API is configured to accept browser requests from `http://lms-ui.mcm`.
 
