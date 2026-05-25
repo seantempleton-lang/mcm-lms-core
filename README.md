@@ -11,8 +11,7 @@ Use these application settings in Coolify:
 - `CORS_ORIGIN=http://lms-ui.mcm`
 - Set a strong `JWT_SECRET`
 - Set `DATABASE_URL` to your Coolify Postgres connection string
-- For local app storage, set `DOCUMENT_STORAGE=local` and `DOCUMENTS_ROOT` to a persistent mounted directory
-- For Garage/S3 storage, set `DOCUMENT_STORAGE=s3`, `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, and usually `S3_FORCE_PATH_STYLE=true`
+- Set `DOCUMENTS_ROOT` to a persistent mounted directory if admins will upload resources
 - Set `RUN_SEED=true` only when intentionally seeding the environment
 
 This API is configured to accept browser requests from `http://lms-ui.mcm`.
@@ -29,3 +28,5 @@ Returns up to 50 users (`id`, `name`, `email`, `role`) for adding attendees to s
 - `npm run module:import -- content/modules/example.module.json --dry-run` validates a package from disk.
 
 See `MODULE_BUILD_CONTEXT.md` for the module package format used by module-building agents.
+
+For a human-readable walkthrough of how to author modules, extract source PDFs, structure slide content, and validate imports, see `MODULE_CREATION_GUIDE.md`.
